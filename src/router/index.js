@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Game from 'components/game/Game'
+import GameDetail from 'components/game-detail/game-detail'
 import Service from 'components/service/Service'
 import Search from 'components/search/Search'
 
@@ -15,7 +16,13 @@ export default new Router({
     {
       path: '/game',
       name: 'Game',
-      component: Game
+      component: Game,
+      children:[
+        {
+          path:':id',
+          component: GameDetail
+        }
+      ]
     },
     {
       path: '/service',

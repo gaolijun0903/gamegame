@@ -8,10 +8,9 @@
       <div>
         <div class="slider-wrapper" v-if="focuslist.length">
           <slider>
-            <div v-for="item in focuslist">
-              <a href="javascript:;">
+            <div v-for="item in focuslist" @click="toDetail(item)">
                 <img class="needsclick" @load="loadImage" :src="item.imgpath" />
-              </a>
+
             </div>
           </slider>
         </div>
@@ -75,6 +74,7 @@
         <loading></loading>
       </div>
     </scroll>
+    <router-view></router-view>
   </div>
 </template>
 
@@ -83,7 +83,7 @@
   import slider from 'base/slider/slider'
   import greyBar from 'base/grey-bar/grey-bar'
   import loading from 'base/loading/loading'
-  import {getGamelist} from 'api/game'
+  import {getGamelist,addMoreGamelist} from 'api/game'
   import {cloneObj} from 'common/js/util'
 
   export default{
@@ -99,7 +99,6 @@
       }
     },
     created(){
-
       this.initData();
     },
     methods:{
@@ -111,12 +110,11 @@
           this.newgamelist = this.normalizeImage(res.newgamelist);
           this.gamelist = this.normalizeImage(res.gamelist);
           this.$nextTick(()=>{
-
             this.$refs.scroll.refresh();
             this._setWidth();
-            this.$refs.newgamelist.refresh();
           })
-
+        }).catch((err)=>{
+          // TODO alert("网络错误")
         })
       },
       addMore(){
@@ -124,11 +122,18 @@
           return
         }
         this.page++;
-        getGamelist().then((res)=>{
-          this.gamelist = this.gamelist.concat( this.normalizeImage(res.gamelist) );
+
+//        addMoreGamelist(this.page).then(()=>{
+//          this.gamelist = this.gamelist.concat( this.normalizeImage(res.gamelist) );
 //          if(this.page===res.total_page){
 //            this.hasMore = false;
 //          }
+//          this.$nextTick(()=>{
+//            this.$refs.scroll.refresh();
+//          })
+//        })
+        getGamelist().then((res)=>{
+          this.gamelist = this.gamelist.concat( this.normalizeImage(res.gamelist) );
           if(this.page===5){
             this.hasMore = false;
           }
@@ -156,6 +161,7 @@
       },
       toDetail(item){
         console.log(item.gameid);
+//        this.$router.push({path:'game/'+item.gameid})
       },
       download(item){
         console.log(item.name);
@@ -165,6 +171,7 @@
         this.children = this.$refs.newgamelistGroup.children;
         let width = this.children[0].clientWidth * this.children.length;
         this.$refs.newgamelistGroup.style.width = width + 'px';
+        this.$refs.newgamelist.refresh();
       }
     },
     components:{
