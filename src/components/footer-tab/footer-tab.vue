@@ -30,6 +30,16 @@
       </div>
     </div>
 	</router-link>
+  <router-link tag="div" class="tab-item" to="/rank">
+    <div class="tab-inner">
+      <div class="icon">
+        <i class="iconfont icon-paixingbang"></i>
+      </div>
+      <div class="text">
+        <span class="tab-link">排行</span>
+      </div>
+    </div>
+  </router-link>
 </div>
 </template>
 
@@ -44,7 +54,7 @@ export default{}
   left:0;
 	display: flex;
   width:100%;
-	height: 80px;
+	height: 60px;
   background: #eaeaea;
   color: #bababa;
 }
@@ -59,12 +69,12 @@ export default{}
   justify-content: center;
 }
 .tab .tab-item .tab-inner .iconfont{
-  font-size: 38px;
-  line-height:56px;
+  font-size: 32px;
+  line-height:40px;
 }
 .tab .tab-item .tab-inner .text{
-  font-size: 18px;
-  line-height:24px;
+  font-size: 14px;
+  line-height:20px;
 }
 .tab .tab-item.router-link-active  .tab-inner{
 	color: #00a98f;
