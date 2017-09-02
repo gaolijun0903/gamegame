@@ -65,12 +65,12 @@ export default{
 				})
 			}
 			if(this.pullup){
-				this.scroll.on('scrollEnd',(pos)=>{
-					if(this.scroll.y <= this.scroll.maxScrollY + 50){
-						this.$emit('scrollNearEnd');
-					}
-				})
-			}
+        this.scroll.on('scrollEnd',(pos)=>{
+          if(this.scroll.y <= this.scroll.maxScrollY + 50){
+            this.$emit('scrollNearEnd');
+          }
+        })
+      }
 			if(this.beforeScroll){
 				this.scroll.on('beforeScrollStart',()=>{
 					this.$emit('beforeScrollStart');

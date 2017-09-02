@@ -23,7 +23,7 @@
 	<router-link tag="div" class="tab-item" to="/search">
     <div class="tab-inner">
       <div class="icon">
-        <i class="iconfont icon-sousuo1"></i>
+        <i class="iconfont icon-sousuo"></i>
       </div>
       <div class="text">
         <span class="tab-link">搜索</span>
@@ -33,7 +33,7 @@
   <router-link tag="div" class="tab-item" to="/rank">
     <div class="tab-inner">
       <div class="icon">
-        <i class="iconfont icon-paixingbang"></i>
+        <i class="iconfont icon-paixing"></i>
       </div>
       <div class="text">
         <span class="tab-link">排行</span>
@@ -55,6 +55,7 @@ export default{}
 	display: flex;
   width:100%;
 	height: 60px;
+  border-top:1px solid #b2b2b2;
   background: #eaeaea;
   color: #bababa;
 }
