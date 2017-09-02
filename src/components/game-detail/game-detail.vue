@@ -13,8 +13,9 @@
 .game-detail{
   position: fixed;
   top:0;
-  bottom:60px;
+  bottom:0;
   width:100%;
   background: #fff;
+  z-index:50;
 }
 </style>

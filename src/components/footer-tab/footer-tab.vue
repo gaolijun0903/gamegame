@@ -58,6 +58,7 @@ export default{}
   border-top:1px solid #b2b2b2;
   background: #eaeaea;
   color: #bababa;
+  z-index:10;
 }
 .tab .tab-item{
 	flex: 1;

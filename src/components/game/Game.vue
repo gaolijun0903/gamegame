@@ -10,7 +10,6 @@
           <slider>
             <div v-for="item in focuslist" @click="toDetail(item)">
                 <img class="needsclick" @load="loadImage" :src="item.imgpath" />
-
             </div>
           </slider>
         </div>
@@ -18,12 +17,9 @@
         <div class="newgamelist-wrapper" v-if="newgamelist.length">
           <div class="newgamelist-title">
             <h1 class="title-text">新游下载</h1>
-            <!--<div class="icon extend-click">-->
-              <!--<i class="iconfont icon-return"></i>-->
-            <!--</div>-->
           </div>
-          <scroll class="newgamelist" ref="newgamelist" :scroll-x="scrollX" :data="newgamelist">
-            <ul class="newgamelist-group" ref="newgamelistGroup">
+          <div class="newgamelist" v-if="newgamelist.length">
+            <scroll-x>
               <li class="newgamelist-item" v-for="item in newgamelist"  @click="toDetail(item)">
                 <div class="pic">
                   <img width="60" height="60" :src="item.ioc_path" />
@@ -31,8 +27,8 @@
                 <div class="name">{{item.name}}</div>
                 <div class="download-btn" @click.stop="download(item)">下载</div>
               </li>
-            </ul>
-          </scroll>
+            </scroll-x>
+          </div>
         </div>
 
         <grey-bar></grey-bar>
@@ -81,6 +77,7 @@
 <script>
   import scroll from 'base/scroll/scroll'
   import slider from 'base/slider/slider'
+  import scrollX from 'base/scroll-x/scroll-x'
   import greyBar from 'base/grey-bar/grey-bar'
   import loading from 'base/loading/loading'
   import {getGamelist,addMoreGamelist} from 'api/game'
@@ -92,7 +89,6 @@
         focuslist:[],
         newgamelist:[],
         gamelist:[],
-        scrollX:true,
         page:1,
         pullup:true,
         hasMore:true
@@ -111,7 +107,6 @@
           this.gamelist = this.normalizeImage(res.gamelist);
           this.$nextTick(()=>{
             this.$refs.scroll.refresh();
-            this._setWidth();
           })
         }).catch((err)=>{
           // TODO alert("网络错误")
@@ -122,19 +117,9 @@
           return
         }
         this.page++;
-
-//        addMoreGamelist(this.page).then(()=>{
-//          this.gamelist = this.gamelist.concat( this.normalizeImage(res.gamelist) );
-//          if(this.page===res.total_page){
-//            this.hasMore = false;
-//          }
-//          this.$nextTick(()=>{
-//            this.$refs.scroll.refresh();
-//          })
-//        })
-        getGamelist().then((res)=>{
+        addMoreGamelist(this.page).then((res)=>{
           this.gamelist = this.gamelist.concat( this.normalizeImage(res.gamelist) );
-          if(this.page===5){
+          if(this.page===res.total_page){
             this.hasMore = false;
           }
           this.$nextTick(()=>{
@@ -161,22 +146,17 @@
       },
       toDetail(item){
         console.log(item.gameid);
-//        this.$router.push({path:'game/'+item.gameid})
+        this.$router.push({path:'game/'+item.gameid})
       },
       download(item){
         console.log(item.name);
         window.location.href = "http://f3.market.xiaomi.com/download/AppStore/06e095d3f6a226d76d97e3bb3c30f5e171e4252fa/com.tencent.qqmusic.apk";
-      },
-      _setWidth(){
-        this.children = this.$refs.newgamelistGroup.children;
-        let width = this.children[0].clientWidth * this.children.length;
-        this.$refs.newgamelistGroup.style.width = width + 'px';
-        this.$refs.newgamelist.refresh();
       }
     },
     components:{
       scroll,
       slider,
+      scrollX,
       greyBar,
       loading
     }
@@ -220,11 +200,6 @@
     width:100%;
     height:130px;
     overflow: hidden;
-  }
-  .game .newgamelist-wrapper .newgamelist .newgamelist-group{
-    /*width:200%;*/
-    height:100%;
-    white-space:nowrap;
   }
   .game .newgamelist-wrapper .newgamelist .newgamelist-item{
     display: inline-block;

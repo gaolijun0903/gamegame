@@ -8,10 +8,6 @@
 import BScroll from 'better-scroll'
 export default{
 	props: {
-	  scrollX:{
-	    type:Boolean,
-      default:false
-    },
 		probeType: {
 			type: Number,
 			default: 1
@@ -51,10 +47,7 @@ export default{
 			if(!this.$refs.wrapper){
 				return
 			}
-
 			this.scroll = new BScroll(this.$refs.wrapper,{
-			  scrollX: this.scrollX,
-        scrollY: !this.scrollX,
 				probeType: this.probeType,
 				click: this.click
 			})
