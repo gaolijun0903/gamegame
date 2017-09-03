@@ -20,11 +20,12 @@
           </div>
           <div class="newgamelist" v-if="newgamelist.length">
             <scroll-x>
-              <li class="newgamelist-item" v-for="item in newgamelist"  @click="toDetail(item)">
+              <li class="newgamelist-item" v-for="item in newgamelist" @click="toDetail(item)">
                 <div class="pic">
                   <img width="60" height="60" :src="item.ioc_path" />
                 </div>
                 <div class="name">{{item.name}}</div>
+                <div class="typename">{{item.typename}}</div>
                 <div class="download-btn" @click.stop="download(item)">下载</div>
               </li>
             </scroll-x>
@@ -35,16 +36,14 @@
 
         <div class="gamelist-wrapper">
           <ul>
-            <li class="gamelist-item" v-for="item in gamelist" @click="toDetail(item)">
+            <li class="gamelist-item border1px " v-for="item in gamelist" @click="toDetail(item)">
               <div class="pic">
                 <img width="60" height="60" :src="item.ioc_path" />
               </div>
               <div class="desc">
                 <div class="name">
-                  <div class="inlineblock text">{{item.name}}</div>
-                  <div class="inlineblock" v-show="item.tj==='1'">
-                    <div class="inlineblock icon"></div><div class="inlineblock recommend">推荐</div>
-                  </div>
+                  <div class="text">{{item.name}}</div>
+                  <icon-tag  v-show="item.tj==='1'"></icon-tag>
                 </div>
                 <div class="size-role-percent">
                   <span class="roundbg size">{{item.apksize}}MB</span>
@@ -79,9 +78,10 @@
   import slider from 'base/slider/slider'
   import scrollX from 'base/scroll-x/scroll-x'
   import greyBar from 'base/grey-bar/grey-bar'
+  import iconTag from 'base/icon-tag/icon-tag'
   import loading from 'base/loading/loading'
   import {getGamelist,addMoreGamelist} from 'api/game'
-  import {cloneObj} from 'common/js/util'
+  import {normalizeImage} from 'common/js/game-img'
 
   export default{
     data () {
@@ -102,9 +102,9 @@
         getGamelist().then((res)=>{
           console.log('-->')
           console.log(res)
-          this.focuslist = this.normalizeImage(res.focuslist);
-          this.newgamelist = this.normalizeImage(res.newgamelist);
-          this.gamelist = this.normalizeImage(res.gamelist);
+          this.focuslist = normalizeImage(res.focuslist);
+          this.newgamelist = normalizeImage(res.newgamelist);
+          this.gamelist = normalizeImage(res.gamelist);
           this.$nextTick(()=>{
             this.$refs.scroll.refresh();
           })
@@ -118,7 +118,7 @@
         }
         this.page++;
         addMoreGamelist(this.page).then((res)=>{
-          this.gamelist = this.gamelist.concat( this.normalizeImage(res.gamelist) );
+          this.gamelist = this.gamelist.concat( normalizeImage(res.gamelist) );
           if(this.page===res.total_page){
             this.hasMore = false;
           }
@@ -127,17 +127,6 @@
           })
         })
       },
-      normalizeImage(list){
-        let _list = cloneObj(list);
-        _list.forEach((item)=>{
-          if(item.imgpath){
-            item.imgpath = 'http://app.kf989.com'+item.imgpath;
-          }else if(item.ioc_path){
-            item.ioc_path = 'http://app.kf989.com' + item.ioc_path;
-          }
-        })
-        return _list;
-      },
       loadImage(){
         if (!this.checkLoaded){
           this.$refs.scroll.refresh();
@@ -145,8 +134,7 @@
         }
       },
       toDetail(item){
-        console.log(item.gameid);
-        this.$router.push({path:'game/'+item.gameid})
+        this.$router.push({path:'/game/'+item.gameid})
       },
       download(item){
         console.log(item.name);
@@ -158,6 +146,7 @@
       slider,
       scrollX,
       greyBar,
+      iconTag,
       loading
     }
   }
@@ -186,7 +175,7 @@
   }
   .game .newgamelist-wrapper .newgamelist-title{
     position: relative;
-    padding: 10px 15px;
+    padding: 10px 15px 5px;
     height:30px;
     font-size:16px;
     line-height: 30px;
@@ -210,8 +199,16 @@
     text-align: center;
   }
   .game .newgamelist-wrapper .newgamelist .newgamelist-item .name{
+    margin: 0 auto;
+    width: 70px;
+    overflow: hidden;
+    text-overflow: ellipsis;
     font-size: 12px;
     line-height:24px;
+  }
+  .game .newgamelist-wrapper .newgamelist .newgamelist-item .typename{
+    font-size: 10px;
+    color: #a4a4a4;
   }
   .game .newgamelist-wrapper .newgamelist .newgamelist-item .download-btn{
     font-size: 12px;
@@ -231,7 +228,6 @@
     box-sizing: border-box;
     align-items: center;
     padding:15px;
-    border-bottom:1px solid #f2f2f2;
   }
   .game .gamelist-wrapper .gamelist-item .pic{
     flex:0 0 75px;
@@ -249,25 +245,9 @@
     margin-bottom:4px;
     font-size:14px;
   }
-  .game .gamelist-wrapper .gamelist-item .desc .name .inlineblock{
+  .game .gamelist-wrapper .gamelist-item .desc .name .text{
     display: inline-block;
     vertical-align: middle;
-  }
-  .game .gamelist-wrapper .gamelist-item .desc .name .icon{
-    width:0;
-    height:0;
-    border-width:7px 7px 7px 0;
-    border-style:solid;
-    border-color:transparent #e32141 transparent transparent;
-  }
-  .game .gamelist-wrapper .gamelist-item .desc .name .recommend{
-    font-size: 10px;
-    line-height:14px;
-    padding:0 2px;
-    box-sizing: border-box;
-    border-radius:1px 3px 3px 1px;
-    background:#e32141;
-    color: #fff;
   }
   .game .gamelist-wrapper .gamelist-item .desc .size-role-percent{
     font-size:12px;
@@ -326,7 +306,6 @@
     text-align: center;
     color:#dcdcdc;
   }
-
   .game .game-content .loading-container{
     position: absolute;
     width: 100%;

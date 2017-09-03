@@ -9,3 +9,8 @@ export function addMoreGamelist(page){
   const url = 'http://app.kf989.com/api/paging?cpsid=133'
   return jsonp(url, {page:page}, {timeout:5000})
 }
+
+export function getDetail(id){
+  const url = ''
+  return jsonp(url,{id:id},{timeout:5000})
+}

@@ -1,5 +1,5 @@
 <template>
-<div class="tab">
+<div class="tab border1px-deep">
 	<router-link tag="div" class="tab-item" to="/game">
 		<div class="tab-inner">
       <div class="icon">
@@ -10,7 +10,7 @@
       </div>
     </div>
 	</router-link>
-	<router-link tag="div" class="tab-item" to="/service">
+	<router-link tag="div" class="tab-item" to="/openarea">
     <div class="tab-inner">
       <div class="icon">
         <i class="iconfont icon-weibiaoti119"></i>
@@ -53,12 +53,15 @@ export default{}
   bottom: 0;
   left:0;
 	display: flex;
+  box-sizing: border-box;
+  align-items: center;
   width:100%;
 	height: 60px;
-  border-top:1px solid #b2b2b2;
+  /*border-top:1px solid #b2b2b2;*/
   background: #eaeaea;
   color: #bababa;
   z-index:10;
+  font-weight:100;
 }
 .tab .tab-item{
 	flex: 1;
@@ -70,13 +73,15 @@ export default{}
   flex-direction: column;
   justify-content: center;
 }
+.tab .tab-item .tab-inner .icon{
+  font-size:0;
+}
 .tab .tab-item .tab-inner .iconfont{
   font-size: 32px;
-  line-height:40px;
 }
 .tab .tab-item .tab-inner .text{
   font-size: 14px;
-  line-height:20px;
+  line-height:24px;
 }
 .tab .tab-item.router-link-active  .tab-inner{
 	color: #00a98f;

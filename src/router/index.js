@@ -2,8 +2,9 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Game from 'components/game/Game'
 import GameDetail from 'components/game-detail/game-detail'
-import Service from 'components/service/Service'
+import openArea from 'components/open-area/openArea'
 import Search from 'components/search/Search'
+import Rank from 'components/rank/rank'
 
 Vue.use(Router)
 
@@ -25,14 +26,25 @@ export default new Router({
       ]
     },
     {
-      path: '/service',
-      name: 'Service',
-      component: Service
+      path: '/openarea',
+      name: 'openArea',
+      component: openArea,
+      children:[
+        {
+          path:':id',
+          component: GameDetail
+        }
+      ]
     },
     {
       path: '/search',
       name: 'Search',
       component: Search
+    },
+    {
+      path: '/rank',
+      name: 'Rank',
+      component: Rank
     }
   ]
 })

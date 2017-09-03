@@ -1,0 +1,219 @@
+<template>
+  <div class="open-area">
+    <scroll class="arealist-wrapper"
+            :data="allList"
+            v-if="allList.length"
+            :pulldown="pulldown"
+            :probe-type="probeType"
+            @scrollNearTop="refreshData()"
+    >
+      <div class="arealist">
+        <div class="refresh">下拉刷新</div>
+        <div class="today">
+          <div class="timelist" v-for="item in todayList">
+            <h1 class="opentime">{{item.openingtime}}</h1>
+            <ul class="openlist">
+              <li class="opengame" v-for="game in item.openlist" @click="toDetail(game)">
+                <div class="top-wrapper">
+                  <div class="pic">
+                    <img width="60" height="60" :src="game.ioc_path">
+                  </div>
+                  <div class="desc">
+                    <div class="name">{{game.gamename}}</div>
+                    <div class="newarea">新服</div>
+                  </div>
+                </div>
+                <div class="areaname">{{game.areaname}}</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <grey-bar :height="5"></grey-bar>
+        <div class="tomorrow">
+          <div class="title">明日开服预告</div>
+          <div class="timelist" v-for="item in tomorrowList">
+            <h1 class="opentime">{{item.openingtime}}</h1>
+            <ul class="openlist">
+              <li class="opengame" v-for="game in item.openlist" @click="toDetail(game)">
+                <div class="top-wrapper">
+                  <div class="pic">
+                    <img width="60" height="60" :src="game.ioc_path">
+                  </div>
+                  <div class="desc">
+                    <div class="name">{{game.gamename}}</div>
+                    <div class="newarea">新服</div>
+                  </div>
+                </div>
+                <div class="areaname">{{game.areaname}}</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <top-tip ref="toptip">
+          <div class="tip-title">
+            <i class="icon-ok"></i>
+            <span class="text">刷新成功</span>
+          </div>
+        </top-tip>
+      </div>
+    </scroll>
+    <router-view></router-view>
+  </div>
+</template>
+
+<script>
+  import scroll from 'base/scroll/scroll'
+  import topTip from 'base/top-tip/top-tip'
+  import greyBar from 'base/grey-bar/grey-bar'
+  import {getOpenAreaList} from 'api/open'
+  import {normalizeImage2} from 'common/js/game-img'
+
+  export default {
+    data () {
+      return {
+        todayList:[],
+        tomorrowList:[],
+        pulldown:true,
+        probeType:3
+      }
+    },
+    computed:{
+      allList(){
+        let arr = this.todayList.concat(this.tomorrowList);
+        return arr
+      }
+    },
+    mounted(){
+      this.initData();
+    },
+    methods:{
+      initData(refresh){
+        getOpenAreaList().then((res)=>{
+          console.log(res)
+          this.todayList= normalizeImage2(res.today)
+          this.tomorrowList = normalizeImage2(res.tomorrow)
+          if(refresh){
+            setTimeout(()=>{
+              this.$refs.toptip.show();
+            },500)
+          }
+        })
+      },
+      toDetail(item){
+        this.$router.push({path:'/openarea/'+item.gameid})
+      },
+      refreshData(){
+        console.log('refresh')
+        this.initData(true);
+      }
+    },
+    components:{
+      scroll,
+      greyBar,
+      topTip
+    }
+  }
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+  .open-area{
+    position: fixed;
+    top: 0;
+    bottom:60px;
+    width:100%;
+  }
+  .open-area .arealist-wrapper{
+    height:100%;
+    overflow: hidden;
+  }
+  .open-area .arealist{
+    position: relative;
+  }
+  .open-area .arealist .refresh{
+    position: absolute;
+    top:-30px;
+    width: 100%;
+    text-align: center;
+  }
+  .open-area .arealist .today{
+    padding-top:10px;
+  }
+
+  .open-area .arealist .timelist .opentime{
+    margin-bottom:32px;
+    width: 100px;
+    height: 30px;
+    font-size:14px;
+    line-height:30px;
+    text-align: center;
+    border-radius: 0 15px 15px 0;
+    background:#0adaee;
+    color: #fff;
+  }
+  .open-area .arealist .timelist .openlist{
+    /*margin-bottom:50px;*/
+    padding:0 15px;
+  }
+  .open-area .arealist .timelist .openlist .opengame{
+    margin-bottom:23px;
+    display: inline-block;
+    width:50%;
+    /*border:1px solid orangered;*/
+    box-sizing:border-box;
+  }
+  .open-area .arealist .timelist .openlist .opengame .top-wrapper{
+    width:100%;
+    display: flex;
+    align-items: center;
+    margin-bottom:8px;
+  }
+  .open-area .arealist .timelist .openlist .opengame .top-wrapper .pic{
+    flex:0 0 60px;
+    width:60px;
+    font-size:0;
+
+  }
+  .open-area .arealist .timelist .openlist .opengame .top-wrapper .desc{
+    flex:1;
+    padding:0 10px;
+  }
+  .open-area .arealist .timelist .openlist .opengame .top-wrapper .desc .name{
+    width:85px;
+    height:20px;
+    font-size: 16px;
+    line-height:20px;
+    margin-bottom:8px;
+    overflow: hidden;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+  }
+  .open-area .arealist .timelist .openlist .opengame .top-wrapper .desc .newarea{
+    font-size:14px;
+    color: #ff9900;
+  }
+  .open-area .arealist .timelist .openlist .opengame .areaname{
+    width:130px;
+    height: 26px;
+    text-align: center;
+    font-size:12px;
+    line-height:26px;
+    border:1px solid #f6e16f;
+    border-radius:13px;
+    background:#fdfbdb;
+    color:#ff6600;
+  }
+
+
+
+  .open-area .arealist .tomorrow .title{
+    font-size: 16px;
+    line-height:40px;
+    text-align: center;
+    color:#98cf4a;
+  }
+  .open-area .arealist .tomorrow .timelist .opentime{
+    background:#98cf4a;
+  }
+</style>
+
