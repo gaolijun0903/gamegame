@@ -176,9 +176,9 @@
 <style scoped>
   .game{
     position: fixed;
-    width: 100%;
     top: 0;
     bottom: 60px;
+    width: 100%;
   }
   .game .game-content{
     height: 100%;

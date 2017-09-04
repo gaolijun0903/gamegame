@@ -9,10 +9,6 @@
 <script>
   export default {
     props:{
-      page:{
-        type:Boolean,
-        default:false
-      },
       delay:{
         type:Number,
         default:2000
@@ -20,7 +16,8 @@
     },
     data(){
       return {
-        showFlag:false
+        showFlag:false,
+        page:false
       }
     },
     methods:{
@@ -31,7 +28,7 @@
         this.showFlag = false;
       },
       resetPage(page){
-        //用来区分刷新的是第一次加载还是分页加载
+        //用来区分刷新的是第一次加载(false)还是分页加载(true)
         this.page = page
       },
       refresh(){

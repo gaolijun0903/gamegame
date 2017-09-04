@@ -50,17 +50,16 @@ export default{}
 <style>
 .tab{
   position: fixed;
+  z-index:-10;
   bottom: 0;
   left:0;
-	display: flex;
+  display: flex;
   box-sizing: border-box;
   align-items: center;
   width:100%;
 	height: 60px;
-  /*border-top:1px solid #b2b2b2;*/
   background: #eaeaea;
   color: #bababa;
-  z-index:10;
   font-weight:100;
 }
 .tab .tab-item{
