@@ -13,6 +13,10 @@
           placeholder:'搜索游戏'
         }
     },
+    beforeRouteEnter(to, from, next){
+    	next(true)
+    	window.document.location = "js://webview?network=1"
+    },
     components:{
       searchBox
     }

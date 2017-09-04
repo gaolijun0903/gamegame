@@ -141,6 +141,10 @@
         window.location.href = "http://f3.market.xiaomi.com/download/AppStore/06e095d3f6a226d76d97e3bb3c30f5e171e4252fa/com.tencent.qqmusic.apk";
       }
     },
+    beforeRouteEnter(to, from, next){
+    	next(true)
+    	window.document.location = "js://webview?network=1"
+    },
     components:{
       scroll,
       slider,
