@@ -5,7 +5,7 @@
             v-if="allList.length"
             :pulldown="pulldown"
             :probe-type="probeType"
-            @scrollNearTop="refreshData()"
+            @scrollNearTop="refresh()"
     >
       <div class="arealist">
         <div class="refresh">下拉刷新</div>
@@ -49,14 +49,18 @@
             </ul>
           </div>
         </div>
-        <top-tip ref="toptip">
-          <div class="tip-title">
-            <i class="icon-ok"></i>
-            <span class="text">刷新成功</span>
-          </div>
-        </top-tip>
+      </div>
+      <div class="loading-container" v-show="showLoading">
+        <loading></loading>
       </div>
     </scroll>
+    <warning ref="warning" @refresh="refresh"></warning>
+    <top-tip ref="toptip">
+      <div class="tip-title">
+        <i class="icon-ok"></i>
+        <span class="text">刷新成功</span>
+      </div>
+    </top-tip>
     <router-view></router-view>
   </div>
 </template>
@@ -65,6 +69,8 @@
   import scroll from 'base/scroll/scroll'
   import topTip from 'base/top-tip/top-tip'
   import greyBar from 'base/grey-bar/grey-bar'
+  import loading from 'base/loading/loading'
+  import warning from 'base/warning/warning'
   import {getOpenAreaList} from 'api/open'
   import {normalizeImage2} from 'common/js/game-img'
 
@@ -74,7 +80,8 @@
         todayList:[],
         tomorrowList:[],
         pulldown:true,
-        probeType:3
+        probeType:3,
+        showLoading:true
       }
     },
     computed:{
@@ -88,8 +95,10 @@
     },
     methods:{
       initData(refresh){
+        this.showLoading = true;
         getOpenAreaList().then((res)=>{
           console.log(res)
+          this.showLoading = false;
           this.todayList= normalizeImage2(res.today)
           this.tomorrowList = normalizeImage2(res.tomorrow)
           if(refresh){
@@ -97,20 +106,24 @@
               this.$refs.toptip.show();
             },500)
           }
+        }).catch((err)=>{
+          this.$refs.warning.show();
+          this.showLoading = false
         })
       },
       toDetail(item){
         this.$router.push({path:'/openarea/'+item.gameid})
       },
-      refreshData(){
-        console.log('refresh')
-        this.initData(true);
+      refresh(){
+        this.initData()
       }
     },
     components:{
       scroll,
       greyBar,
-      topTip
+      topTip,
+      loading,
+      warning
     }
   }
 </script>
@@ -139,7 +152,6 @@
   .open-area .arealist .today{
     padding-top:10px;
   }
-
   .open-area .arealist .timelist .opentime{
     margin-bottom:32px;
     width: 100px;
@@ -203,9 +215,6 @@
     background:#fdfbdb;
     color:#ff6600;
   }
-
-
-
   .open-area .arealist .tomorrow .title{
     font-size: 16px;
     line-height:40px;
@@ -214,6 +223,12 @@
   }
   .open-area .arealist .tomorrow .timelist .opentime{
     background:#98cf4a;
+  }
+  .open-area .arealist-wrapper .loading-container{
+    position: absolute;
+    width: 100%;
+    top: 60%;
+    transform: translateY(-50%);
   }
 </style>
 

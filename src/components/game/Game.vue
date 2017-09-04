@@ -13,7 +13,6 @@
             </div>
           </slider>
         </div>
-
         <div class="newgamelist-wrapper" v-if="newgamelist.length">
           <div class="newgamelist-title">
             <h1 class="title-text">新游下载</h1>
@@ -31,9 +30,7 @@
             </scroll-x>
           </div>
         </div>
-
         <grey-bar></grey-bar>
-
         <div class="gamelist-wrapper">
           <ul>
             <li class="gamelist-item border1px " v-for="item in gamelist" @click="toDetail(item)">
@@ -50,25 +47,26 @@
                   <span class="roundbg role">{{item.typename}}</span>
                   <span class="roundbg percent">比例&nbsp;1:{{item.bl}}</span>
                 </div>
-                <div class="sketch">asssaada{{item.sketch}}</div>
+                <div class="sketch">{{item.sketch}}</div>
               </div>
-
               <div class="download-btn" @click.stop="download(item)">下载</div>
             </li>
-            <loading title="" v-show="hasMore"></loading>
-            <div class="no-more" v-show="!hasMore">
-              <div class="line"></div>
-              <div class="text">我是有底线的</div>
-              <div class="line"></div>
+            <div class="loadsucc" v-show="loadsucc">
+              <loading title="" v-show="hasMore && gamelist.length"></loading>
+              <div class="no-more" v-show="!hasMore">
+                <div class="line"></div>
+                <div class="text">我是有底线的</div>
+                <div class="line"></div>
+              </div>
             </div>
           </ul>
         </div>
       </div>
-
-      <div class="loading-container" v-show="!gamelist.length">
+      <div class="loading-container" v-show="showLoading">
         <loading></loading>
       </div>
     </scroll>
+    <warning ref="warning" @refresh="refresh"></warning>
     <router-view></router-view>
   </div>
 </template>
@@ -80,6 +78,7 @@
   import greyBar from 'base/grey-bar/grey-bar'
   import iconTag from 'base/icon-tag/icon-tag'
   import loading from 'base/loading/loading'
+  import warning from 'base/warning/warning'
   import {getGamelist,addMoreGamelist} from 'api/game'
   import {normalizeImage} from 'common/js/game-img'
 
@@ -91,7 +90,9 @@
         gamelist:[],
         page:1,
         pullup:true,
-        hasMore:true
+        loadsucc:false,
+        hasMore:true,
+        showLoading:true
       }
     },
     created(){
@@ -99,9 +100,11 @@
     },
     methods:{
       initData(){
+        this.showLoading = true;
         getGamelist().then((res)=>{
-          console.log('-->')
           console.log(res)
+          this.showLoading = false;
+          this.loadsucc = true;
           this.focuslist = normalizeImage(res.focuslist);
           this.newgamelist = normalizeImage(res.newgamelist);
           this.gamelist = normalizeImage(res.gamelist);
@@ -109,7 +112,9 @@
             this.$refs.scroll.refresh();
           })
         }).catch((err)=>{
-          // TODO alert("网络错误")
+          this.loadsucc = false;
+          this.$refs.warning.show();
+          this.showLoading = false
         })
       },
       addMore(){
@@ -118,6 +123,7 @@
         }
         this.page++;
         addMoreGamelist(this.page).then((res)=>{
+          this.loadsucc = true;
           this.gamelist = this.gamelist.concat( normalizeImage(res.gamelist) );
           if(this.page===res.total_page){
             this.hasMore = false;
@@ -125,6 +131,11 @@
           this.$nextTick(()=>{
             this.$refs.scroll.refresh();
           })
+        }).catch((err)=>{
+          this.loadsucc = false;
+          this.$refs.warning.resetPage(true);
+          this.page--;
+          this.$refs.warning.show();
         })
       },
       loadImage(){
@@ -134,7 +145,16 @@
         }
       },
       toDetail(item){
-        this.$router.push({path:'/game/'+item.gameid})
+        this.$router.push({path:'/game/'+item.gameid});
+      },
+      refresh(page){
+        if(!page){
+          this.initData();
+        }else{
+          this.loadsucc = true;
+          console.log(this.loadsucc)
+          this.addMore();
+        }
       },
       download(item){
         console.log(item.name);
@@ -147,7 +167,8 @@
       scrollX,
       greyBar,
       iconTag,
-      loading
+      loading,
+      warning
     }
   }
 </script>

@@ -69,29 +69,12 @@ export default{
         })
       }
       if(this.pulldown){
-//        this.scroll.on('scroll',(pos)=>{
-//          console.log(this.scroll.y)
-//          if(this.scroll.y > 30){
-//            this.$emit('scrollNearTop');
-//          }
-//        })
-//        this.scroll.on('scrollEnd',(pos)=>{
-//          if(this.scroll.y >30){
-//            this.$emit('scrollNearTop');
-//          }
-//        })
-
-
           this.scroll.on('touchend', (pos) => {
-            // 下拉动作
             if (pos.y > 50) {
               this.$emit('scrollNearTop')
             }
           })
-
-
       }
-
 			if(this.beforeScroll){
 				this.scroll.on('beforeScrollStart',()=>{
 					this.$emit('beforeScrollStart');
