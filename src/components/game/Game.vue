@@ -122,7 +122,6 @@
           return
         }
         this.page++;
-
         addMoreGamelist(this.page).then((res)=>{
           this.loadsucc = true;
           this.$refs.warning.hide();

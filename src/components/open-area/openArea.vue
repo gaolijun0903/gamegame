@@ -28,7 +28,7 @@
             </ul>
           </div>
         </div>
-        <grey-bar :height="5"></grey-bar>
+        <grey-bar></grey-bar>
         <div class="tomorrow">
           <div class="title">明日开服预告</div>
           <div class="timelist" v-for="item in tomorrowList">

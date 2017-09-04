@@ -2,7 +2,10 @@
   <transition name="slide">
     <div class="game-detail">
       <div class="back-title">
-
+        <div class="back" @click="back">
+          <i class="iconfont icon-fanhui"></i>
+        </div>
+        <div class="title">幻界之域-全民修仙巨制</div>
       </div>
       <div class="game-detail-header">
         <div class="pic">
@@ -26,12 +29,19 @@
           </div>
         </scroll-x>
       </div>
+      <grey-bar></grey-bar>
+      <div class="tab-wrapper">
+        <!--TODO-->
+      </div>
     </div>
   </transition>
 </template>
 
 <script>
   import scrollX from 'base/scroll-x/scroll-x'
+  import greyBar from 'base/grey-bar/grey-bar'
+  import loading from 'base/loading/loading'
+  import warning from 'base/warning/warning'
   import {getDetail} from 'api/game'
 
   export default {
@@ -56,10 +66,16 @@
         getDetail(this.$route.params.id).then((res)=>{
           console.log(res)
         })
+      },
+      back(){
+        this.$router.back();
       }
     },
     components:{
-      scrollX
+      scrollX,
+      greyBar,
+      loading,
+      warning
     }
   }
 </script>
@@ -81,6 +97,27 @@
     bottom:0;
     width:100%;
     background: #fff;
+  }
+  .game-detail .back-title{
+    height:36px;
+    background: #eaeaea;
+  }
+  .game-detail .back-title .back{
+    position: absolute;
+    top: 0;
+    left: 6px;
+    z-index: 50;
+  }
+  .game-detail .back-title .title{
+    line-height: 36px;
+    text-align: center;
+    color:#00a98f;
+  }
+  .game-detail .back .iconfont.icon-fanhui{
+    display: block;
+    font-size: 22px;
+    padding: 6px;
+    color: #00a98f;
   }
   .game-detail .game-detail-header{
     display: flex;
@@ -149,7 +186,6 @@
   .game-detail .scroll-x-wrapper{
     height: 200px;
     overflow: hidden;
-    border:1px solid red;
   }
   .game-detail .scroll-x-wrapper .img-detail{
     display: inline-block;

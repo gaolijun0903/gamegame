@@ -7,7 +7,7 @@
     props:{
       height:{
         type:Number,
-        default:10
+        default:5
       }
     },
     mounted(){
