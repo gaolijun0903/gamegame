@@ -122,8 +122,10 @@
           return
         }
         this.page++;
+
         addMoreGamelist(this.page).then((res)=>{
           this.loadsucc = true;
+          this.$refs.warning.hide();
           this.gamelist = this.gamelist.concat( normalizeImage(res.gamelist) );
           if(this.page===res.total_page){
             this.hasMore = false;
