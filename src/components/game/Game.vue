@@ -152,7 +152,6 @@
           this.initData();
         }else{
           this.loadsucc = true;
-          console.log(this.loadsucc)
           this.addMore();
         }
       },

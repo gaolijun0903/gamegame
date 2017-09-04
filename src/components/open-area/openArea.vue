@@ -115,7 +115,7 @@
         this.$router.push({path:'/openarea/'+item.gameid})
       },
       refresh(){
-        this.initData()
+        this.initData(true)
       }
     },
     components:{

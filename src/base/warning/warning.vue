@@ -31,6 +31,7 @@
         this.showFlag = false;
       },
       resetPage(page){
+        //用来区分刷新的是第一次加载还是分页加载
         this.page = page
       },
       refresh(){
