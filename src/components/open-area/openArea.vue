@@ -16,7 +16,7 @@
               <li class="opengame" v-for="game in item.openlist" @click="toDetail(game)">
                 <div class="top-wrapper">
                   <div class="pic">
-                    <img width="60" height="60" :src="game.ioc_path">
+                    <img width="60" height="60" :src="game.ioc_path" :onerror="defaultImg">
                   </div>
                   <div class="desc">
                     <div class="name">{{game.gamename}}</div>
@@ -37,7 +37,7 @@
               <li class="opengame" v-for="game in item.openlist" @click="toDetail(game)">
                 <div class="top-wrapper">
                   <div class="pic">
-                    <img width="60" height="60" :src="game.ioc_path">
+                    <img width="60" height="60" :src="game.ioc_path" :onerror="defaultImg">
                   </div>
                   <div class="desc">
                     <div class="name">{{game.gamename}}</div>
@@ -81,7 +81,8 @@
         tomorrowList:[],
         pulldown:true,
         probeType:3,
-        showLoading:true
+        showLoading:true,
+        defaultImg: 'this.src='+'"static/img/error.png"'
       }
     },
     computed:{
@@ -117,6 +118,10 @@
       refresh(){
         this.initData(true)
       }
+    },
+    beforeRouteEnter(to, from, next){
+    	next(true)
+    	window.document.location = "js://webview?network=1"
     },
     components:{
       scroll,
