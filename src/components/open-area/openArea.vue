@@ -50,10 +50,11 @@
           </div>
         </div>
       </div>
-      <div class="loading-container" v-show="showLoading">
-        <loading></loading>
-      </div>
+      
     </scroll>
+    <div class="loading-container" v-show="showLoading">
+        <loading></loading>
+    </div>
     <warning ref="warning" @refresh="refresh"></warning>
     <top-tip ref="toptip">
       <div class="tip-title">
@@ -73,6 +74,7 @@
   import warning from 'base/warning/warning'
   import {getOpenAreaList} from 'api/open'
   import {normalizeImage2} from 'common/js/game-img'
+  import storage from 'good-storage'
 
   export default {
     data () {
@@ -99,17 +101,24 @@
         this.showLoading = true;
         getOpenAreaList().then((res)=>{
           console.log(res)
+          // 存储更新storage数据
+          storage.set('openarea-json',res)
           this.showLoading = false;
           this.todayList= normalizeImage2(res.today)
           this.tomorrowList = normalizeImage2(res.tomorrow)
           if(refresh){
-            setTimeout(()=>{
-              this.$refs.toptip.show();
-            },500)
+            this.$refs.toptip.show();
           }
         }).catch((err)=>{
-          this.$refs.warning.show();
-          this.showLoading = false
+          var openareajson = storage.get('openarea-json', 404);
+          if(openareajson === 404){
+          	this.$refs.warning.show();
+          	this.showLoading = false
+          }else{
+          	this.showLoading = false;
+	          this.todayList= normalizeImage2(openareajson.today)
+	          this.tomorrowList = normalizeImage2(openareajson.tomorrow)
+          }
         })
       },
       toDetail(item){
@@ -232,7 +241,7 @@
   .open-area .arealist-wrapper .loading-container{
     position: absolute;
     width: 100%;
-    top: 60%;
+    top: 160%;
     transform: translateY(-50%);
   }
 </style>
