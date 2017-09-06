@@ -27,14 +27,16 @@ export function normalizeImage2(list){
 }
 
 function formatTime(time){
-  let t = new Date(Number(time));
+  let t = new Date(Number(time * 1000));
+  let Y = padLeftZero(t.getYear());
   let M = padLeftZero(t.getMonth()+1);
-  let d = padLeftZero(t.getDate())
+  let d = padLeftZero(t.getDate());
   let h = padLeftZero(t.getHours());
   let m = padLeftZero(t.getMinutes());
   let str = M+"/"+d+" "+ h+":"+m
   return str
 }
+
 function padLeftZero(num){
   return num<10 ? '0'+num : num
 }

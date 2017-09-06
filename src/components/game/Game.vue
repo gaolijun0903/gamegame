@@ -81,6 +81,7 @@
   import warning from 'base/warning/warning'
   import {getGamelist,addMoreGamelist} from 'api/game'
   import {normalizeImage} from 'common/js/game-img'
+  import storage from 'good-storage'
 
   export default{
     data () {
@@ -103,6 +104,8 @@
         this.showLoading = true;
         getGamelist().then((res)=>{
           console.log(res)
+          // 存储更新storage数据
+          storage.set('firstpage-json',res)
           this.showLoading = false;
           this.loadsucc = true;
           this.focuslist = normalizeImage(res.focuslist);
@@ -112,9 +115,25 @@
             this.$refs.scroll.refresh();
           })
         }).catch((err)=>{
-          this.loadsucc = false;
-          this.$refs.warning.show();
-          this.showLoading = false
+          console.log('net error')
+          var firPagejson = storage.get('firstpage-json', 404);
+          if(firPagejson===404){
+          	console.log('no storage')
+          	this.loadsucc = false;
+          	this.$refs.warning.show();
+          	this.showLoading = false
+          }else{
+          	console.log('use storage')
+          	this.showLoading = false;
+	          this.loadsucc = true;
+	          this.focuslist = normalizeImage(firPagejson.focuslist);
+	          this.newgamelist = normalizeImage(firPagejson.newgamelist);
+	          this.gamelist = normalizeImage(firPagejson.gamelist);
+	          this.$nextTick(()=>{
+	            this.$refs.scroll.refresh();
+	          })
+          }
+          
         })
       },
       addMore(){
