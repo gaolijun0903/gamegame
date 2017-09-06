@@ -111,9 +111,8 @@
           this.loadsucc = true;
           this.focuslist = normalizeImage(res.focuslist);
           this.newgamelist = normalizeImage(res.newgamelist);
-          this.gamelist = normalizeImage(res.gamelist);
           this.$nextTick(()=>{
-            this.$refs.scroll.refresh();
+            this.gamelist = normalizeImage(res.gamelist);
           })
         }).catch((err)=>{
           console.log('net error')
@@ -129,12 +128,11 @@
 	          this.loadsucc = true;
 	          this.focuslist = normalizeImage(firPagejson.focuslist);
 	          this.newgamelist = normalizeImage(firPagejson.newgamelist);
-	          this.gamelist = normalizeImage(firPagejson.gamelist);
 	          this.$nextTick(()=>{
-	            this.$refs.scroll.refresh();
+              this.gamelist = normalizeImage(firPagejson.gamelist);
 	          })
           }
-          
+
         })
       },
       addMore(){
