@@ -50,11 +50,11 @@
           </div>
         </div>
       </div>
-      
-    </scroll>
-    <div class="loading-container" v-show="showLoading">
+      <div class="loading-container" v-show="showLoading">
         <loading></loading>
-    </div>
+    	</div>
+    </scroll>
+    
     <warning ref="warning" @refresh="refresh"></warning>
     <top-tip ref="toptip">
       <div class="tip-title">
