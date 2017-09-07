@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Game from 'components/game/Game'
-import Gamet from 'components/game/game-testing'
 import GameDetail from 'components/game-detail/game-detail'
 import openArea from 'components/open-area/openArea'
 import Search from 'components/search/Search'
@@ -18,7 +17,7 @@ export default new Router({
     {
       path: '/game',
       name: 'Game',
-      component: Gamet,
+      component: Game,
       children:[
         {
           path:':id',
