@@ -2,7 +2,8 @@
   <div class="game">
     <scroll ref="scroll" class="game-content"
             :data="gamelist"
-
+            :pullup="pullup"
+            @scrollNearEnd="addMore"
     >
       <div>
         <div class="slider-wrapper" v-if="focuslist.length">
@@ -12,23 +13,23 @@
             </div>
           </slider>
         </div>
-        <!--<div class="newgamelist-wrapper" v-if="newgamelist.length">-->
-          <!--<div class="newgamelist-title">-->
-            <!--<h1 class="title-text">新游下载</h1>-->
-          <!--</div>-->
-          <!--<div class="newgamelist" v-if="newgamelist.length">-->
-            <!--<scroll-x>-->
-              <!--<li class="newgamelist-item" v-for="item in newgamelist" @click="toDetail(item)">-->
-                <!--<div class="pic">-->
-                  <!--<img width="60" height="60" :src="item.ioc_path" />-->
-                <!--</div>-->
-                <!--<div class="name">{{item.name}}</div>-->
-                <!--<div class="typename">{{item.typename}}</div>-->
-                <!--<div class="download-btn" @click.stop="download(item)">下载</div>-->
-              <!--</li>-->
-            <!--</scroll-x>-->
-          <!--</div>-->
-        <!--</div>-->
+        <div class="newgamelist-wrapper" v-if="newgamelist.length">
+          <div class="newgamelist-title">
+            <h1 class="title-text">新游下载</h1>
+          </div>
+          <div class="newgamelist" v-if="newgamelist.length">
+            <scroll-x>
+              <li class="newgamelist-item" v-for="item in newgamelist" @click="toDetail(item)">
+                <div class="pic">
+                  <img width="60" height="60" :src="item.ioc_path" />
+                </div>
+                <div class="name">{{item.name}}</div>
+                <div class="typename">{{item.typename}}</div>
+                <div class="download-btn" @click.stop="download(item)">下载</div>
+              </li>
+            </scroll-x>
+          </div>
+        </div>
         <grey-bar></grey-bar>
         <div class="gamelist-wrapper">
           <ul>
