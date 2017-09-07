@@ -1,12 +1,6 @@
 <template>
   <transition name="slide">
     <div class="game-detail">
-      <div class="back-title">
-        <div class="back" @click="back">
-          <i class="iconfont icon-fanhui"></i>
-        </div>
-        <div class="title">幻界之域-全民修仙巨制</div>
-      </div>
       <div class="game-detail-header">
         <div class="pic">
           <img width="60" height="60" src="http://app.kf989.com/uploads/KZMyCKxHRa.png">
@@ -31,7 +25,22 @@
       </div>
       <grey-bar></grey-bar>
       <div class="tab-wrapper">
-        <!--TODO-->
+        <div class="detail-tab">
+          <div class="detail-tab-item" :class="{'active':currentIndex===index}" v-for="(item,index) in detailTabs" @click="selectItem(index)">
+            <span class="detail-tab-inner">{{item}}</span>
+          </div>
+        </div>
+        <div class="detail-tab-container">
+          <div class="detail-content" v-if="currentIndex===0">
+            点评
+          </div>
+          <div class="detail-content" v-if="currentIndex===1">
+            开服
+          </div>
+          <div class="detail-content" v-if="currentIndex===2">
+            礼包
+          </div>
+        </div>
       </div>
     </div>
   </transition>
@@ -47,6 +56,10 @@
   export default {
     data(){
       return{
+        detailTabs:[
+          '点评','开服','礼包'
+        ],
+        currentIndex:0,
         imgs:[
           "http://app.kf989.com/uploads/KZMyCKxHRa.png",
           "http://app.kf989.com/uploads/KZMyCKxHRa.png",
@@ -67,8 +80,8 @@
           console.log(res)
         })
       },
-      back(){
-        this.$router.back();
+      selectItem(index){
+        this.currentIndex = index;
       }
     },
     components:{
@@ -97,27 +110,6 @@
     bottom:0;
     width:100%;
     background: #fff;
-  }
-  .game-detail .back-title{
-    height:36px;
-    background: #eaeaea;
-  }
-  .game-detail .back-title .back{
-    position: absolute;
-    top: 0;
-    left: 6px;
-    z-index: 50;
-  }
-  .game-detail .back-title .title{
-    line-height: 36px;
-    text-align: center;
-    color:#00a98f;
-  }
-  .game-detail .back .iconfont.icon-fanhui{
-    display: block;
-    font-size: 22px;
-    padding: 6px;
-    color: #00a98f;
   }
   .game-detail .game-detail-header{
     display: flex;
@@ -194,4 +186,37 @@
     text-align: center;
   }
 
+  .game-detail .tab-wrapper{
+    /*border:1px solid red;*/
+  }
+  .game-detail .tab-wrapper .detail-tab{
+    display: flex;
+    align-items: center;
+    height:44px;
+    border-bottom:1px solid #b2b2b2;
+  }
+  .game-detail .tab-wrapper .detail-tab .detail-tab-item{
+    flex:1;
+    text-align: center;
+  }
+  .game-detail .tab-wrapper .detail-tab .detail-tab-item.active{
+    color:#00a98f;
+  }
+  .game-detail .tab-wrapper .detail-tab .detail-tab-item .detail-tab-inner{
+    display: inline-block;
+    width:75%;
+    line-height:42px;
+  }
+  .game-detail .tab-wrapper .detail-tab .detail-tab-item.active .detail-tab-inner{
+    border-bottom:2px solid #00a98f;
+  }
+  .game-detail .tab-wrapper .detail-tab .detail-tab-item{
+
+  }
+  .game-detail .tab-wrapper .detail-tab-container{
+
+  }
+  .game-detail .tab-wrapper .detail-tab-container .detail-content{
+
+  }
 </style>

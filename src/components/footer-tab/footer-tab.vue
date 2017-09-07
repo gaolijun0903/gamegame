@@ -1,5 +1,5 @@
 <template>
-<div class="tab border1px-deep">
+<div class="footer-tab border1px-deep">
 	<router-link tag="div" class="tab-item" to="/game">
 		<div class="tab-inner">
       <div class="icon">
@@ -48,7 +48,7 @@ export default{}
 </script>
 
 <style>
-.tab{
+.footer-tab{
   position: fixed;
   z-index:-10;
   bottom: 0;
@@ -62,27 +62,27 @@ export default{}
   color: #bababa;
   font-weight:100;
 }
-.tab .tab-item{
+.footer-tab .tab-item{
 	flex: 1;
 	text-align: center;
 }
-.tab .tab-item .tab-inner{
+.footer-tab .tab-item .tab-inner{
   height:100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
-.tab .tab-item .tab-inner .icon{
+.footer-tab .tab-item .tab-inner .icon{
   font-size:0;
 }
-.tab .tab-item .tab-inner .iconfont{
+.footer-tab .tab-item .tab-inner .iconfont{
   font-size: 32px;
 }
-.tab .tab-item .tab-inner .text{
+.footer-tab .tab-item .tab-inner .text{
   font-size: 14px;
   line-height:24px;
 }
-.tab .tab-item.router-link-active  .tab-inner{
+.footer-tab .tab-item.router-link-active  .tab-inner{
 	color: #00a98f;
 }
 </style>
