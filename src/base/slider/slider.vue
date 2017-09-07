@@ -53,7 +53,7 @@ export default{
 			this.slider.refresh();
 		})
 	},
-	activated() {
+	activated() {   //keep-alive 组件激活时调用。
     if (this.autoPlay) {
       this._play()
     }

@@ -14,3 +14,9 @@ export function getDetail(id){
   const url = ''
   return jsonp(url,{id:id},{timeout:5000})
 }
+
+//tesing---------------------------------------------------
+export function getData(){
+  const url = '/static/js/game.js'
+  return jsonp(url, {}, {name: 'func' ,timeout:5000})
+}
