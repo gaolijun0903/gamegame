@@ -80,6 +80,7 @@
   import warning from 'base/warning/warning'
   import {getGamelist,addMoreGamelist} from 'api/game'
   import {normalizeImage} from 'common/js/game-img'
+  import storage from 'good-storage'
 
   export default{
     data () {
@@ -95,6 +96,7 @@
       }
     },
     created(){
+    	console.log(123)
       this.initData();
     },
     methods:{
@@ -102,18 +104,35 @@
         this.showLoading = true;
         getGamelist().then((res)=>{
           console.log(res)
+          // 存储更新storage数据
+          storage.set('firstpage-json',res)
           this.showLoading = false;
           this.loadsucc = true;
           this.focuslist = normalizeImage(res.focuslist);
           this.newgamelist = normalizeImage(res.newgamelist);
-          this.gamelist = normalizeImage(res.gamelist);
-//          this.$nextTick(()=>{
-//            this.$refs.scroll.refresh();
-//          })
+          this.$nextTick(()=>{
+            this.gamelist = normalizeImage(res.gamelist);
+          })
+
         }).catch((err)=>{
-          this.loadsucc = false;
-          this.$refs.warning.show();
-          this.showLoading = false
+          console.log('net error')
+          var firPagejson = storage.get('firstpage-json', 404);
+          if(firPagejson===404){
+          	console.log('no storage')
+          	this.loadsucc = false;
+          	this.$refs.warning.show();
+          	this.showLoading = false
+          }else{
+          	console.log('use storage')
+          	this.showLoading = false;
+	          this.loadsucc = true;
+	          this.focuslist = normalizeImage(firPagejson.focuslist);
+	          this.newgamelist = normalizeImage(firPagejson.newgamelist);
+	          this.$nextTick(()=>{
+              this.gamelist = normalizeImage(firPagejson.gamelist);
+	          })
+          }
+
         })
       },
       addMore(){
@@ -159,6 +178,10 @@
         console.log(item.name);
         window.location.href = "http://f3.market.xiaomi.com/download/AppStore/06e095d3f6a226d76d97e3bb3c30f5e171e4252fa/com.tencent.qqmusic.apk";
       }
+    },
+    beforeRouteEnter(to, from, next){
+    	next(true)
+    	window.document.location = "js://webview?network=1"
     },
     components:{
       scroll,

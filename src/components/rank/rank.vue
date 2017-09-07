@@ -6,7 +6,12 @@
 
 <script>
 
-    export default {}
+    export default {
+    	beforeRouteEnter(to, from, next){
+	    	next(true)
+	    	window.document.location = "js://webview?network=1"
+	    }
+    }
 </script>
 
 <style>

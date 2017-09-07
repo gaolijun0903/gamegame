@@ -16,7 +16,7 @@
               <li class="opengame" v-for="game in item.openlist" @click="toDetail(game)">
                 <div class="top-wrapper">
                   <div class="pic">
-                    <img width="60" height="60" :src="game.ioc_path">
+                    <img width="60" height="60" :src="game.ioc_path" :onerror="defaultImg">
                   </div>
                   <div class="desc">
                     <div class="name">{{game.gamename}}</div>
@@ -37,7 +37,7 @@
               <li class="opengame" v-for="game in item.openlist" @click="toDetail(game)">
                 <div class="top-wrapper">
                   <div class="pic">
-                    <img width="60" height="60" :src="game.ioc_path">
+                    <img width="60" height="60" :src="game.ioc_path" :onerror="defaultImg">
                   </div>
                   <div class="desc">
                     <div class="name">{{game.gamename}}</div>
@@ -52,8 +52,9 @@
       </div>
       <div class="loading-container" v-show="showLoading">
         <loading></loading>
-      </div>
+    	</div>
     </scroll>
+    
     <warning ref="warning" @refresh="refresh"></warning>
     <top-tip ref="toptip">
       <div class="tip-title">
@@ -73,6 +74,7 @@
   import warning from 'base/warning/warning'
   import {getOpenAreaList} from 'api/open'
   import {normalizeImage2} from 'common/js/game-img'
+  import storage from 'good-storage'
 
   export default {
     data () {
@@ -81,7 +83,8 @@
         tomorrowList:[],
         pulldown:true,
         probeType:3,
-        showLoading:true
+        showLoading:true,
+        defaultImg: 'this.src='+'"static/img/error.png"'
       }
     },
     computed:{
@@ -98,17 +101,24 @@
         this.showLoading = true;
         getOpenAreaList().then((res)=>{
           console.log(res)
+          // 存储更新storage数据
+          storage.set('openarea-json',res)
           this.showLoading = false;
           this.todayList= normalizeImage2(res.today)
           this.tomorrowList = normalizeImage2(res.tomorrow)
           if(refresh){
-            setTimeout(()=>{
-              this.$refs.toptip.show();
-            },500)
+            this.$refs.toptip.show();
           }
         }).catch((err)=>{
-          this.$refs.warning.show();
-          this.showLoading = false
+          var openareajson = storage.get('openarea-json', 404);
+          if(openareajson === 404){
+          	this.$refs.warning.show();
+          	this.showLoading = false
+          }else{
+          	this.showLoading = false;
+	          this.todayList= normalizeImage2(openareajson.today)
+	          this.tomorrowList = normalizeImage2(openareajson.tomorrow)
+          }
         })
       },
       toDetail(item){
@@ -117,6 +127,10 @@
       refresh(){
         this.initData(true)
       }
+    },
+    beforeRouteEnter(to, from, next){
+    	next(true)
+    	window.document.location = "js://webview?network=1"
     },
     components:{
       scroll,
@@ -227,7 +241,7 @@
   .open-area .arealist-wrapper .loading-container{
     position: absolute;
     width: 100%;
-    top: 60%;
+    top: 160%;
     transform: translateY(-50%);
   }
 </style>
