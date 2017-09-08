@@ -1,65 +1,84 @@
 <template>
   <transition name="slide">
-    <div class="game-detail">
-      <div class="game-detail-header">
-        <div class="pic">
-          <img width="60" height="60" src="http://app.kf989.com/uploads/KZMyCKxHRa.png">
-        </div>
-        <div class="desc">
-          <h1 class="name">幻界之域-全民修仙巨制</h1>
-          <div class="size-role-percent">
-            <span class="roundbg size">123MB</span>
-            <span class="roundbg role">角色</span>
-            <span class="roundbg percent">比例&nbsp;1:1000</span>
+    <scroll class="game-detail"
+            :data="datalist"
+            :probe-type="probeType"
+            :listen-scroll="listenScroll"
+            @scroll="scrollPos"
+    >
+      <div>
+        <div class="game-detail-header">
+          <div class="pic">
+            <img width="60" height="60" src="http://app.kf989.com/uploads/KZMyCKxHRa.png">
           </div>
-          <div class="sketch">asssaada</div>
+          <div class="desc">
+            <h1 class="name">幻界之域-全民修仙巨制</h1>
+            <div class="size-role-percent">
+              <span class="roundbg size">123MB</span>
+              <span class="roundbg role">角色</span>
+              <span class="roundbg percent">比例&nbsp;1:1000</span>
+            </div>
+            <div class="sketch">asssaada</div>
+          </div>
+          <div class="recommend">荐</div>
         </div>
-        <div class="recommend">荐</div>
+        <div class="scroll-x-wrapper">
+          <scroll-x>
+            <div class="img-detail" v-for="item in imgs">
+              <img width="110" :src="item">
+            </div>
+          </scroll-x>
+        </div>
+        <grey-bar></grey-bar>
+        <div>
+          <div class="detail-tab">
+            <div class="detail-tab-item" :class="{'active':currentIndex===index}" v-for="(item,index) in detailTabs" @click="selectItem(index)">
+              <span class="detail-tab-inner">{{item}}</span>
+            </div>
+          </div>
+          <div class="detail-tab-container">
+            <div class="detail-content" v-if="currentIndex===0">
+              点评
+            </div>
+            <div class="detail-content" v-if="currentIndex===1">
+              开服
+            </div>
+            <div class="detail-content" v-if="currentIndex===2">
+              礼包
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="scroll-x-wrapper">
-        <scroll-x>
-          <div class="img-detail" v-for="item in imgs">
-            <img width="110" :src="item">
-          </div>
-        </scroll-x>
-      </div>
-      <grey-bar></grey-bar>
-      <div class="tab-wrapper">
-        <div class="detail-tab">
-          <div class="detail-tab-item" :class="{'active':currentIndex===index}" v-for="(item,index) in detailTabs" @click="selectItem(index)">
-            <span class="detail-tab-inner">{{item}}</span>
-          </div>
-        </div>
-        <div class="detail-tab-container">
-          <div class="detail-content" v-if="currentIndex===0">
-            点评
-          </div>
-          <div class="detail-content" v-if="currentIndex===1">
-            开服
-          </div>
-          <div class="detail-content" v-if="currentIndex===2">
-            礼包
-          </div>
+      <div class="detail-tab fixed-top" ref="fixedTop" v-show="showfixedtop">
+        <div class="detail-tab-item" :class="{'active':currentIndex===index}" v-for="(item,index) in detailTabs" @click="selectItem(index)">
+          <span class="detail-tab-inner">{{item}}</span>
         </div>
       </div>
-    </div>
+    </scroll>
   </transition>
 </template>
 
 <script>
+  import scroll from 'base/scroll/scroll'
   import scrollX from 'base/scroll-x/scroll-x'
   import greyBar from 'base/grey-bar/grey-bar'
   import loading from 'base/loading/loading'
   import warning from 'base/warning/warning'
   import {getDetail} from 'api/game'
 
+
+  import {getOpenAreaList} from 'api/open'
+  import {normalizeImage2} from 'common/js/game-img'
+
   export default {
     data(){
       return{
-        detailTabs:[
-          '点评','开服','礼包'
-        ],
+        detailTabs:[  '点评','开服','礼包'],
         currentIndex:0,
+        probeType:3,
+        listenScroll:true,
+        showfixedtop:false,
+        datalist:[],
         imgs:[
           "http://app.kf989.com/uploads/KZMyCKxHRa.png",
           "http://app.kf989.com/uploads/KZMyCKxHRa.png",
@@ -72,19 +91,31 @@
       }
     },
     mounted(){
-//      this.initData()
+      this.initData()
     },
     methods:{
       initData(){
-        getDetail(this.$route.params.id).then((res)=>{
+        /*getDetail(this.$route.params.id).then((res)=>{
           console.log(res)
+        })*/
+        getOpenAreaList().then((res)=>{
+          this.datalist = res.today;
         })
       },
       selectItem(index){
         this.currentIndex = index;
+      },
+      scrollPos(pos){
+        console.log(pos.y)
+        if(Math.abs(pos.y)>=295){
+          this.showfixedtop = true
+        }else{
+          this.showfixedtop = false
+        }
       }
     },
     components:{
+      scroll,
       scrollX,
       greyBar,
       loading,
@@ -186,37 +217,40 @@
     text-align: center;
   }
 
-  .game-detail .tab-wrapper{
-    /*border:1px solid red;*/
-  }
-  .game-detail .tab-wrapper .detail-tab{
+  .game-detail .detail-tab{
     display: flex;
     align-items: center;
     height:44px;
     border-bottom:1px solid #b2b2b2;
   }
-  .game-detail .tab-wrapper .detail-tab .detail-tab-item{
+  .game-detail .fixed-top{
+    position: fixed;
+    top:0;
+    left:0;
+    width:100%;
+    background:#fff;
+  }
+  .game-detail .detail-tab .detail-tab-item{
     flex:1;
     text-align: center;
   }
-  .game-detail .tab-wrapper .detail-tab .detail-tab-item.active{
+  .game-detail .detail-tab .detail-tab-item.active{
     color:#00a98f;
   }
-  .game-detail .tab-wrapper .detail-tab .detail-tab-item .detail-tab-inner{
+  .game-detail .detail-tab .detail-tab-item .detail-tab-inner{
     display: inline-block;
     width:75%;
     line-height:42px;
   }
-  .game-detail .tab-wrapper .detail-tab .detail-tab-item.active .detail-tab-inner{
+  .game-detail .detail-tab .detail-tab-item.active .detail-tab-inner{
     border-bottom:2px solid #00a98f;
   }
-  .game-detail .tab-wrapper .detail-tab .detail-tab-item{
-
+  .game-detail .detail-tab-container{
+    padding:20px 15px 0;
+    height: 800px;
+    background: #ccc;
   }
-  .game-detail .tab-wrapper .detail-tab-container{
-
-  }
-  .game-detail .tab-wrapper .detail-tab-container .detail-content{
+  .game-detail .detail-tab-container .detail-content{
 
   }
 </style>

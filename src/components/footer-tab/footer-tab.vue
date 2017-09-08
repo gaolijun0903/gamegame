@@ -1,5 +1,5 @@
 <template>
-<div class="footer-tab border1px-deep">
+<div class="footer-tab border1px-top">
 	<router-link tag="div" class="tab-item" to="/game">
 		<div class="tab-inner">
       <div class="icon">

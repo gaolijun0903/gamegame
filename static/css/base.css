@@ -38,10 +38,10 @@ body,html{
   border-top:1px solid rgba(7,17,27,0.1);
   content:" ";
 }
-.border1px-deep{
+.border1px-top{
   position:relative;
 }
-.border1px-deep:before{
+.border1px-top:before{
   display:block;
   position:absolute;
   left:0;
@@ -50,3 +50,4 @@ body,html{
   border-top:1px solid rgba(7,17,27,0.1);
   content:" ";
 }
+

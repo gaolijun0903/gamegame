@@ -51,6 +51,7 @@
               </div>
               <div class="download-btn" @click.stop="download(item)">下载</div>
             </li>
+
             <div class="loadsucc" v-show="loadsucc">
               <loading title="" v-show="hasMore && gamelist.length"></loading>
               <div class="no-more" v-show="!hasMore">
@@ -59,6 +60,10 @@
                 <div class="line"></div>
               </div>
             </div>
+            <div class="loadfail" v-show="!loadsucc && !showLoading">
+              网络出错了
+            </div>
+
           </ul>
         </div>
       </div>
@@ -66,7 +71,6 @@
         <loading></loading>
       </div>
     </scroll>
-    <warning ref="warning" @refresh="refresh"></warning>
     <router-view></router-view>
   </div>
 </template>
@@ -102,38 +106,38 @@
     },
     methods:{
       initData(){
-        this.showLoading = true;
+        this.showLoading = true;        //只在第一次请求数据时使用，请求结束，不管成功与否都消失
         getGamelist().then((res)=>{
-          console.log(res)
-          // 存储更新storage数据
-          storage.set('firstpage-json',res)
           this.showLoading = false;
-          this.loadsucc = true;
+          this.loadsucc = true;     //加载成功，可以显示addmore和底线
+          console.log(res)
+          storage.set('firstpage-json',res);       // 存储更新storage数据
           this.focuslist = normalizeImage(res.focuslist);
           this.newgamelist = normalizeImage(res.newgamelist);
           this.$nextTick(()=>{
             this.gamelist = normalizeImage(res.gamelist);
           })
-
         }).catch((err)=>{
+          this.showLoading = false;
+          this.loadsucc = false;     //加载失败，显示网络出错，不能显示addmore和底线
+
+          //TODO-----------
+          //this.page--;           //首页从缓存读了，联网后该从哪一页加载？
+
+
+
           console.log('net error')
           var firPagejson = storage.get('firstpage-json', 404);
           if(firPagejson===404){
           	console.log('no storage')
-          	this.loadsucc = false;
-          	this.$refs.warning.show();
-          	this.showLoading = false
           }else{
           	console.log('use storage')
-          	this.showLoading = false;
-	          this.loadsucc = true;
 	          this.focuslist = normalizeImage(firPagejson.focuslist);
 	          this.newgamelist = normalizeImage(firPagejson.newgamelist);
 	          this.$nextTick(()=>{
               this.gamelist = normalizeImage(firPagejson.gamelist);
 	          })
           }
-
         })
       },
       addMore(){
@@ -142,8 +146,7 @@
         }
         this.page++;
         addMoreGamelist(this.page).then((res)=>{
-          this.loadsucc = true;
-          this.$refs.warning.hide();
+          this.loadsucc = true;    //加载成功，可以显示addmore和底线
           this.gamelist = this.gamelist.concat( normalizeImage(res.gamelist) );
           if(this.page===res.total_page){
             this.hasMore = false;
@@ -152,10 +155,8 @@
             this.$refs.scroll.refresh();
           })
         }).catch((err)=>{
-          this.loadsucc = false;
-          this.$refs.warning.resetPage(true);
           this.page--;
-          this.$refs.warning.show();
+          this.loadsucc = false;     //加载失败，显示网络出错，不能显示addmore和底线
         })
       },
       loadImage(){
@@ -166,14 +167,6 @@
       },
       toDetail(item){
         this.$router.push({path:'/game/'+item.gameid});
-      },
-      refresh(page){
-        if(!page){
-          this.initData();
-        }else{
-          this.loadsucc = true;
-          this.addMore();
-        }
       },
       download(item){
         console.log(item.name);
@@ -349,6 +342,10 @@
     font-size:12px;
     text-align: center;
     color:#dcdcdc;
+  }
+  .game .gamelist-wrapper .loadfail{
+    text-align: center;
+    line-height:40px;
   }
   .game .game-content .loading-container{
     position: absolute;

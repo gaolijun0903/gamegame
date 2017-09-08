@@ -39,13 +39,12 @@
 	position: fixed;
 	top: 0;
 	width: 100%;
-
   height:30px;
 	background: rgba(0,0,0,0.3);
 	z-index: 500;
   color:#fff;
   text-align: center;
-  font-size:10px;
+  font-size:12px;
   line-height:30px;
 }
 .top-tip.drop-enter-active, .top-tip.drop-leave-active{

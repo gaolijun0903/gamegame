@@ -54,7 +54,7 @@
         <loading></loading>
     	</div>
     </scroll>
-    
+
     <warning ref="warning" @refresh="refresh"></warning>
     <top-tip ref="toptip">
       <div class="tip-title">
@@ -185,7 +185,6 @@
     margin-bottom:23px;
     display: inline-block;
     width:50%;
-    /*border:1px solid orangered;*/
     box-sizing:border-box;
   }
   .open-area .arealist .timelist .openlist .opengame .top-wrapper{
@@ -198,7 +197,6 @@
     flex:0 0 60px;
     width:60px;
     font-size:0;
-
   }
   .open-area .arealist .timelist .openlist .opengame .top-wrapper .desc{
     flex:1;
@@ -224,7 +222,8 @@
     text-align: center;
     font-size:12px;
     line-height:26px;
-    border:1px solid #f6e16f;
+    /*border:1px solid #f6e16f;*/
+    border:1px solid rgba(246,225,111,0.4);
     border-radius:13px;
     background:#fdfbdb;
     color:#ff6600;
