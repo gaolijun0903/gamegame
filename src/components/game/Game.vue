@@ -101,24 +101,31 @@
       }
     },
     created(){
-    	console.log(123)
+    	console.log('created')
       this.initData();
     },
     methods:{
       initData(){
-        this.showLoading = true;        //只在第一次请求数据时使用，请求结束，不管成功与否都消失
-        getGamelist().then((res)=>{
-          this.showLoading = false;
-          this.loadsucc = true;     //加载成功，可以显示addmore和底线
-          console.log(res)
-          storage.set('firstpage-json',res);       // 存储更新storage数据
-          this.focuslist = normalizeImage(res.focuslist);
-          this.newgamelist = normalizeImage(res.newgamelist);
-          this.$nextTick(()=>{
-            this.gamelist = normalizeImage(res.gamelist);
-          })
-        }).catch((err)=>{
-          this.showLoading = false;
+      	var isNet = false;
+      	try{
+      		// 检测是否有网络
+	      	isNet = myObj.checknet('检测是否有网络');
+      	}catch(error){}
+      	if(isNet){
+	        this.showLoading = true;        //只在第一次请求数据时使用，请求结束，不管成功与否都消失
+	        getGamelist().then((res)=>{
+	          this.showLoading = false;
+	          this.loadsucc = true;     //加载成功，可以显示addmore和底线
+	          console.log(res)
+	          storage.set('firstpage-json',res);       // 存储更新storage数据
+	          this.focuslist = normalizeImage(res.focuslist);
+	          this.newgamelist = normalizeImage(res.newgamelist);
+	          this.$nextTick(()=>{
+	            this.gamelist = normalizeImage(res.gamelist);
+	          })
+	        }).catch((err)=>{})
+        }else{
+        	this.showLoading = false;
           this.loadsucc = false;     //加载失败，显示网络出错，不能显示addmore和底线
 
           //TODO-----------
@@ -138,7 +145,8 @@
               this.gamelist = normalizeImage(firPagejson.gamelist);
 	          })
           }
-        })
+        }
+    		
       },
       addMore(){
         if(!this.hasMore){
