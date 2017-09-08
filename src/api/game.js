@@ -11,8 +11,8 @@ export function addMoreGamelist(page){
 }
 
 export function getDetail(id){
-  const url = ''
-  return jsonp(url,{id:id},{timeout:3000})
+  const url = 'http://app.kf989.com/api/gameinfo?cpsid=1000'
+  return jsonp(url,{gameid:id},{timeout:3000})
 }
 
 

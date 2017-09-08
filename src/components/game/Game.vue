@@ -82,7 +82,6 @@
   import greyBar from 'base/grey-bar/grey-bar'
   import iconTag from 'base/icon-tag/icon-tag'
   import loading from 'base/loading/loading'
-  import warning from 'base/warning/warning'
   import {getGamelist,addMoreGamelist} from 'api/game'
   import {normalizeImage} from 'common/js/game-img'
   import storage from 'good-storage'
@@ -123,7 +122,6 @@
 
           //TODO-----------
           //this.page--;           //首页从缓存读了，联网后该从哪一页加载？
-
 
 
           console.log('net error')
@@ -183,8 +181,7 @@
       scrollX,
       greyBar,
       iconTag,
-      loading,
-      warning
+      loading
     }
   }
 </script>

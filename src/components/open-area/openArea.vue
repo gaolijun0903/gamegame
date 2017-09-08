@@ -5,7 +5,7 @@
             v-if="allList.length"
             :pulldown="pulldown"
             :probe-type="probeType"
-            @scrollNearTop="refresh()"
+            @scrollNearTop="refresh"
     >
       <div class="arealist">
         <div class="refresh">下拉刷新</div>
@@ -54,14 +54,7 @@
         <loading></loading>
     	</div>
     </scroll>
-
-    <warning ref="warning" @refresh="refresh"></warning>
-    <top-tip ref="toptip">
-      <div class="tip-title">
-        <i class="icon-ok"></i>
-        <span class="text">刷新成功</span>
-      </div>
-    </top-tip>
+    <top-tip ref="toptip"></top-tip>
     <router-view></router-view>
   </div>
 </template>
@@ -71,7 +64,6 @@
   import topTip from 'base/top-tip/top-tip'
   import greyBar from 'base/grey-bar/grey-bar'
   import loading from 'base/loading/loading'
-  import warning from 'base/warning/warning'
   import {getOpenAreaList} from 'api/open'
   import {normalizeImage2} from 'common/js/game-img'
   import storage from 'good-storage'
@@ -97,25 +89,28 @@
       this.initData();
     },
     methods:{
-      initData(refresh){
+      initData(pulldown){
         this.showLoading = true;
         getOpenAreaList().then((res)=>{
+          this.showLoading = false;
           console.log(res)
           // 存储更新storage数据
           storage.set('openarea-json',res)
-          this.showLoading = false;
           this.todayList= normalizeImage2(res.today)
           this.tomorrowList = normalizeImage2(res.tomorrow)
-          if(refresh){
-            this.$refs.toptip.show();
+          if(pulldown){
+            this.$refs.toptip.show(0);
           }
         }).catch((err)=>{
+          this.showLoading = false;
+          if(pulldown){
+            this.$refs.toptip.show(1);
+            return
+          }
           var openareajson = storage.get('openarea-json', 404);
           if(openareajson === 404){
-          	this.$refs.warning.show();
-          	this.showLoading = false
+            this.$refs.toptip.show();
           }else{
-          	this.showLoading = false;
 	          this.todayList= normalizeImage2(openareajson.today)
 	          this.tomorrowList = normalizeImage2(openareajson.tomorrow)
           }
@@ -136,8 +131,7 @@
       scroll,
       greyBar,
       topTip,
-      loading,
-      warning
+      loading
     }
   }
 </script>
@@ -178,7 +172,6 @@
     color: #fff;
   }
   .open-area .arealist .timelist .openlist{
-    /*margin-bottom:50px;*/
     padding:0 15px;
   }
   .open-area .arealist .timelist .openlist .opengame{
