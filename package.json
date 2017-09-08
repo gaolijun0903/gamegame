@@ -2,12 +2,16 @@
   "name": "game",
   "version": "1.0.0",
   "description": "A Vue.js project",
-  "author": "gaolijun <15801419993@163.com>",
+  "author": "gaolijun <***@163.com>",
   "private": true,
   "scripts": {
     "dev": "node build/dev-server.js",
     "start": "node build/dev-server.js",
     "build": "node build/build.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gaolijun0903/gamegame.git"
   },
   "dependencies": {
     "babel-runtime": "^6.26.0",
