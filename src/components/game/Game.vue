@@ -7,7 +7,7 @@
     >
       <div>
         <div class="slider-wrapper" v-if="focuslist.length">
-          <slider>
+          <slider ref="slider">
             <div v-for="item in focuslist" @click="toDetail(item)">
                 <img class="needsclick" @load="loadImage" :src="item.imgpath" />
             </div>
@@ -114,6 +114,7 @@
           this.focuslist = normalizeImage(res.focuslist);
           this.newgamelist = normalizeImage(res.newgamelist);
           this.$nextTick(()=>{
+            this.$refs.slider.initSliders();
             this.$refs.scrollx.initScrollX()
             this.gamelist = normalizeImage(res.gamelist);
           })

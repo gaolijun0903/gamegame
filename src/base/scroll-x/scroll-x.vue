@@ -30,8 +30,8 @@
       },
       _setWidth(){
         this.children = this.$refs.scrollGroup.children;
-        console.log('scrollX--children')
-        console.log(this.children)
+//        console.log('scrollX--children')
+//        console.log(this.children)
         let width = this.children[0].clientWidth * this.children.length;
         this.$refs.scrollGroup.style.width = width + 'px';
       },
