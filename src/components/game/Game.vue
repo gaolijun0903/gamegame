@@ -100,7 +100,7 @@
       }
     },
     created(){
-      console.log('game-created')
+      console.log('game-created');
       this.initData();
     },
     methods:{
@@ -109,11 +109,12 @@
         getGamelist().then((res)=>{
           this.showLoading = false;
           this.loadsucc = true;     //加载成功，可以显示addmore和底线
-          console.log(res)
+          console.log(res);
           storage.set('firstpage-json',res);       // 存储更新storage数据
           this.focuslist = normalizeImage(res.focuslist);
           this.newgamelist = normalizeImage(res.newgamelist);
           this.$nextTick(()=>{
+            this.$refs.scrollx.initScrollX()
             this.gamelist = normalizeImage(res.gamelist);
           })
         }).catch((err)=>{
@@ -124,15 +125,16 @@
           //this.page--;           //首页从缓存读了，联网后该从哪一页加载？
 
 
-          console.log('net error')
+          console.log('net error');
           var firPagejson = storage.get('firstpage-json', 404);
           if(firPagejson===404){
-          	console.log('no storage')
+          	console.log('no storage');
           }else{
-          	console.log('use storage')
+          	console.log('use storage');
 	          this.focuslist = normalizeImage(firPagejson.focuslist);
 	          this.newgamelist = normalizeImage(firPagejson.newgamelist);
 	          this.$nextTick(()=>{
+              this.$refs.scrollx.initScrollX()
               this.gamelist = normalizeImage(firPagejson.gamelist);
 	          })
           }
