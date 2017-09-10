@@ -13,7 +13,7 @@
 	<router-link tag="div" class="tab-item" to="/openarea">
     <div class="tab-inner">
       <div class="icon">
-        <i class="iconfont icon-weibiaoti119"></i>
+        <i class="iconfont icon-caidan"></i>
       </div>
       <div class="text">
         <span class="tab-link">开服</span>
@@ -23,7 +23,7 @@
 	<router-link tag="div" class="tab-item" to="/search">
     <div class="tab-inner">
       <div class="icon">
-        <i class="iconfont icon-sousuo"></i>
+        <i class="iconfont icon-sousuo1"></i>
       </div>
       <div class="text">
         <span class="tab-link">搜索</span>
@@ -56,11 +56,12 @@ export default{}
   display: flex;
   box-sizing: border-box;
   align-items: center;
-  width:100%;
+  width: 100%;
 	height: 60px;
   background: #eaeaea;
   color: #bababa;
-  font-weight:100;
+  font-weight: 100;
+  padding-top: 5px;
 }
 .footer-tab .tab-item{
 	flex: 1;
@@ -76,7 +77,7 @@ export default{}
   font-size:0;
 }
 .footer-tab .tab-item .tab-inner .iconfont{
-  font-size: 32px;
+  font-size: 28px;
 }
 .footer-tab .tab-item .tab-inner .text{
   font-size: 14px;

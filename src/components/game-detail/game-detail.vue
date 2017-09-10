@@ -9,7 +9,7 @@
       <div>
         <div class="game-detail-header">
           <div class="pic">
-            <img width="60" height="60" :src="detailObj.ioc_path">
+            <img width="60" height="60" :src="detailObj.ioc_path" :onerror="defaultImg">
           </div>
           <div class="desc">
             <h1 class="name">{{detailObj.name}}</h1>
@@ -23,7 +23,7 @@
           <div class="recommend" v-show="detailObj.tj==='1'">荐</div>
         </div>
         <div class="scroll-x-wrapper" v-show="imgs.length>0">
-          <scroll-x ref="scrollx" :data="imgs.img">
+          <scroll-x ref="scrollx" :data="imgs">
             <div class="img-detail" v-for="item in imgs">
               <img width="110" :src="item">
             </div>
@@ -73,14 +73,17 @@
   export default {
     data(){
       return{
-        detailObj:{},
+        detailObj:{
+          ioc_path: "static/img/error.png"
+        },
         imgs:[],
-        detailTabs:[  '描述','开服','礼包'],
+        datalist:[],
+        detailTabs:['福利','开服','礼包'],
         currentIndex:0,
         probeType:3,
         listenScroll:true,
         showfixedtop:false,
-        datalist:[]
+        defaultImg: 'this.src='+'"static/img/error.png"'
       }
     },
     created(){
@@ -90,19 +93,22 @@
     methods:{
       initData(){
         getDetail(this.$route.params.id).then((res)=>{
-          console.log(res)
-          this.imgs = this.normalizeImage(res.img)
+          console.log(res);
+          this.imgs = this.normalizeImage(res.img);
           this.$nextTick(()=>{
-            this.$refs.scrollx.initScrollX()
+            this.$refs.scrollx.initScrollX();
           })
           this.detailObj = cloneObj(res);
           this.detailObj.ioc_path = 'http://app.kf989.com' + res.ioc_path;
 
+        }).catch((err)=>{
+          console.log('detail-err')
+         // this.detailObj.ioc_path = "static/img/error.png"
         })
       },
       normalizeImage(list){
         var newList = list.map((item)=>{
-          return 'http://app.kf989.com' + item
+          return 'http://app.kf989.com' + item;
         })
         return newList
       },
@@ -112,10 +118,13 @@
       scrollPos(pos){
         console.log(pos.y)
         if(Math.abs(pos.y)>=295){
-          this.showfixedtop = true
+          this.showfixedtop = true;
         }else{
-          this.showfixedtop = false
+          this.showfixedtop = false;
         }
+      },
+      imgErr(){
+
       },
       download(){
         console.log(this.detailObj.apkname);
