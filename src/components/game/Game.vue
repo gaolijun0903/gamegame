@@ -172,7 +172,9 @@
       }
     },
     beforeRouteEnter(to, from, next){
-    	next(true)
+    	next(vm=>{
+    		vm.$refs.scroll.refresh();
+    	})
     	window.document.location = "js://webview?network=1"
     },
     components:{
