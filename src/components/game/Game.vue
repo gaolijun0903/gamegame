@@ -100,7 +100,7 @@
       }
     },
     created(){
-    	console.log(123)
+      console.log('game-created')
       this.initData();
     },
     methods:{

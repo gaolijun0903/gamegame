@@ -22,8 +22,8 @@
           </div>
           <div class="recommend" v-show="detailObj.tj==='1'">荐</div>
         </div>
-        <div class="scroll-x-wrapper">
-          <scroll-x>
+        <div class="scroll-x-wrapper" v-show="imgs.length>0">
+          <scroll-x ref="scrollx" :data="imgs.img">
             <div class="img-detail" v-for="item in imgs">
               <img width="110" :src="item">
             </div>
@@ -68,37 +68,43 @@
   import loading from 'base/loading/loading'
   import warning from 'base/warning/warning'
   import {getDetail} from 'api/game'
+  import {cloneObj} from "common/js/util";
+
   export default {
     data(){
       return{
         detailObj:{},
+        imgs:[],
         detailTabs:[  '描述','开服','礼包'],
         currentIndex:0,
         probeType:3,
         listenScroll:true,
         showfixedtop:false,
-        datalist:[],
-        imgs:[
-          "http://app.kf989.com/uploads/KZMyCKxHRa.png",
-          "http://app.kf989.com/uploads/KZMyCKxHRa.png",
-          "http://app.kf989.com/uploads/KZMyCKxHRa.png",
-          "http://app.kf989.com/uploads/KZMyCKxHRa.png",
-          "http://app.kf989.com/uploads/KZMyCKxHRa.png",
-          "http://app.kf989.com/uploads/KZMyCKxHRa.png",
-          "http://app.kf989.com/uploads/KZMyCKxHRa.png"
-        ]
+        datalist:[]
       }
     },
-    mounted(){
+    created(){
+      console.log('game-detail-created')
       this.initData()
     },
     methods:{
       initData(){
         getDetail(this.$route.params.id).then((res)=>{
           console.log(res)
-          res.ioc_path = 'http://app.kf989.com' + res.ioc_path;
-          this.detailObj = res;
+          this.imgs = this.normalizeImage(res.img)
+          this.$nextTick(()=>{
+            this.$refs.scrollx.initScrollX()
+          })
+          this.detailObj = cloneObj(res);
+          this.detailObj.ioc_path = 'http://app.kf989.com' + res.ioc_path;
+
         })
+      },
+      normalizeImage(list){
+        var newList = list.map((item)=>{
+          return 'http://app.kf989.com' + item
+        })
+        return newList
       },
       selectItem(index){
         this.currentIndex = index;
