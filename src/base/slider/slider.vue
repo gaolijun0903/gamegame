@@ -117,7 +117,8 @@ export default{
 			},this.interval)
 		},
     refresh(){
-      this.slider && this.slider.refresh();
+    		console.log('slider refresh')
+      //this.slider && this.slider.refresh();
     }
 	}
 }

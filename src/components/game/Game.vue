@@ -7,7 +7,7 @@
     >
       <div>
         <div class="slider-wrapper" v-if="focuslist.length">
-          <slider>
+          <slider ref="myslider">
             <div v-for="item in focuslist" @click="toDetail(item)">
                 <img class="needsclick" @load="loadImage" :src="item.imgpath" />
             </div>
@@ -18,7 +18,7 @@
             <h1 class="title-text">新游下载</h1>
           </div>
           <div class="newgamelist" v-if="newgamelist.length">
-            <scroll-x>
+            <scroll-x ref="scrollx">
               <li class="newgamelist-item" v-for="item in newgamelist" @click="toDetail(item)">
                 <div class="pic">
                   <img width="60" height="60" :src="item.ioc_path" />
@@ -173,7 +173,7 @@
     },
     beforeRouteEnter(to, from, next){
     	next(vm=>{
-    		vm.$refs.scroll.refresh();
+    		vm.initData();
     	})
     	window.document.location = "js://webview?network=1"
     },
