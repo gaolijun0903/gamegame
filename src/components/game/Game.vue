@@ -114,7 +114,7 @@
           this.focuslist = normalizeImage(res.focuslist);
           this.newgamelist = normalizeImage(res.newgamelist);
           this.$nextTick(()=>{
-            this.$refs.slider.initSliders();
+            this.$refs.slider.initSlider();
             this.$refs.scrollx.initScrollX()
             this.gamelist = normalizeImage(res.gamelist);
           })
