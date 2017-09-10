@@ -126,10 +126,8 @@
       }
     },
     beforeRouteEnter(to, from, next){
-    	next(vm=>{
-    		vm.$refs.scroll.refresh();
-    	})
-    	window.document.location = "js://webview?network=1"
+	    	next(true)
+	    	window.document.location = "js://webview?network=1"
     },
     components:{
       scroll,
