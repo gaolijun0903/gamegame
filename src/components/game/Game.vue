@@ -9,7 +9,7 @@
         <div class="slider-wrapper" v-if="focuslist.length">
           <slider ref="slider">
             <div v-for="item in focuslist" @click="toDetail(item)">
-                <img class="needsclick" @load="loadImage" :src="item.imgpath" />
+                <img class="needsclick" @load="loadImage" :src="item.imgpath"/>
             </div>
           </slider>
         </div>
@@ -21,7 +21,7 @@
             <scroll-x ref="scrollx">
               <li class="newgamelist-item" v-for="item in newgamelist" @click="toDetail(item)">
                 <div class="pic">
-                  <img width="60" height="60" :src="item.ioc_path" />
+                  <img width="60" height="60" :src="item.ioc_path" :onerror="defaultImg"/>
                 </div>
                 <div class="name">{{item.name}}</div>
                 <div class="typename">{{item.typename}}</div>
@@ -78,7 +78,8 @@
         pullup:true,
         loadsucc:false,
         hasMore:true,
-        showLoading:true
+        showLoading:true,
+        defaultImg: 'this.src='+'"static/img/error.png"'
       }
     },
     created(){
@@ -158,8 +159,8 @@
       }
     },
     beforeRouteEnter(to, from, next){
-    	next(true);
-    	window.document.location = "js://webview?network=1"
+    		next(true)
+	    	window.document.location = "js://webview?network=1"
     },
     components:{
       scroll,

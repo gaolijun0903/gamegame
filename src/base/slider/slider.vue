@@ -116,9 +116,9 @@ export default{
 				this.slider.goToPage(pageIdx,0,400);
 			},this.interval)
 		},
-    refresh(){
-      this.slider && this.slider.refresh();
-    }
+	    refresh(){
+	      	this.slider && this.slider.refresh();
+	    }
 	}
 }
 </script>

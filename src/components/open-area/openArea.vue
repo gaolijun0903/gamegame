@@ -1,6 +1,6 @@
 <template>
   <div class="open-area">
-    <scroll class="arealist-wrapper"
+    <scroll ref="scroll" class="arealist-wrapper"
             :data="allList"
             v-if="allList.length"
             :pulldown="pulldown"
@@ -126,8 +126,8 @@
       }
     },
     beforeRouteEnter(to, from, next){
-    	next(true);
-    	window.document.location = "js://webview?network=1"
+	    	next(true)
+	    	window.document.location = "js://webview?network=1"
     },
     components:{
       scroll,
