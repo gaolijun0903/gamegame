@@ -2,7 +2,7 @@
   <div class="game-list">
     <li class="gamelist-item border1px " v-for="item in data" @click="toDetail(item)">
       <div class="pic">
-        <img width="60" height="60" :src="item.ioc_path" />
+        <img width="60" height="60" :src="item.ioc_path"  :onerror="defaultImg" />
       </div>
       <div class="desc">
         <div class="name">
@@ -25,6 +25,11 @@
   import iconTag from 'base/icon-tag/icon-tag'
 
   export default {
+  	data(){
+  		return {
+  			defaultImg: 'this.src='+'"static/img/error.png"'
+  		}
+  	},
     props:{
       data:{
         type:Array,
