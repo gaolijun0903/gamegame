@@ -86,24 +86,30 @@
       }
     },
     mounted(){
-      this.initData();
+      this.initData(false);
     },
     methods:{
-      initData(pulldown){
-        this.showLoading = true;
+      initData(ispulldown){
+        if(!ispulldown){
+          this.showLoading = true;
+        }
+
         getOpenAreaList().then((res)=>{
-          this.showLoading = false;
-          console.log(res)
-          // 存储更新storage数据
-          storage.set('openarea-json',res)
-          this.todayList= normalizeImage2(res.today)
-          this.tomorrowList = normalizeImage2(res.tomorrow)
-          if(pulldown){
-            this.$refs.toptip.show(0);
-          }
+          setTimeout(()=>{
+            this.showLoading = false;
+            console.log(res)
+            // 存储更新storage数据
+            storage.set('openarea-json',res)
+            this.todayList= normalizeImage2(res.today)
+            this.tomorrowList = normalizeImage2(res.tomorrow)
+            if(ispulldown){
+              this.$refs.toptip.show(0);
+            }
+          },2000)
+
         }).catch((err)=>{
           this.showLoading = false;
-          if(pulldown){
+          if(ispulldown){
             this.$refs.toptip.show(1);
             return
           }
@@ -233,7 +239,7 @@
   .open-area .arealist-wrapper .loading-container{
     position: absolute;
     width: 100%;
-    top: 160%;
+    top: 60%;
     transform: translateY(-50%);
   }
 </style>

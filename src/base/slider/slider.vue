@@ -115,7 +115,10 @@ export default{
 			this.timer = setTimeout(()=>{
 				this.slider.goToPage(pageIdx,0,400)
 			},this.interval)
-		}
+		},
+    refresh(){
+      this.slider && this.slider.refresh();
+    }
 	}
 }
 </script>
