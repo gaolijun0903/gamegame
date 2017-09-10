@@ -175,7 +175,8 @@
     },
     beforeRouteEnter(to, from, next){
     	next(vm=>{
-    		vm.initData();
+    		//vm.initData()
+    		//vm.$refs.scroll.refresh();
     	})
     	window.document.location = "js://webview?network=1"
     },
