@@ -50,10 +50,11 @@
           </div>
         </div>
       </div>
-      <div class="loading-container" v-show="showLoading">
-        <loading></loading>
-    	</div>
+
     </scroll>
+    <div class="loading-container" v-show="showLoading">
+      <loading></loading>
+    </div>
     <top-tip ref="toptip"></top-tip>
     <router-view></router-view>
   </div>
@@ -93,20 +94,15 @@
         if(!ispulldown){
           this.showLoading = true;
         }
-
         getOpenAreaList().then((res)=>{
-          setTimeout(()=>{
-            this.showLoading = false;
-            console.log(res)
-            // 存储更新storage数据
-            storage.set('openarea-json',res)
-            this.todayList= normalizeImage2(res.today)
-            this.tomorrowList = normalizeImage2(res.tomorrow)
-            if(ispulldown){
-              this.$refs.toptip.show(0);
-            }
-          },2000)
-
+          this.showLoading = false;
+          console.log(res);
+          storage.set('openarea-json',res);
+          this.todayList= normalizeImage2(res.today);
+          this.tomorrowList = normalizeImage2(res.tomorrow);
+          if(ispulldown){
+            this.$refs.toptip.show(0);
+          }
         }).catch((err)=>{
           this.showLoading = false;
           if(ispulldown){
@@ -117,20 +113,20 @@
           if(openareajson === 404){
             this.$refs.toptip.show();
           }else{
-	          this.todayList= normalizeImage2(openareajson.today)
-	          this.tomorrowList = normalizeImage2(openareajson.tomorrow)
+	          this.todayList= normalizeImage2(openareajson.today);
+	          this.tomorrowList = normalizeImage2(openareajson.tomorrow);
           }
         })
       },
       toDetail(item){
-        this.$router.push({path:'/openarea/'+item.gameid})
+        this.$router.push({path:'/openarea/'+item.gameid});
       },
       refresh(){
-        this.initData(true)
+        this.initData(true);
       }
     },
     beforeRouteEnter(to, from, next){
-    	next(true)
+    	next(true);
     	window.document.location = "js://webview?network=1"
     },
     components:{
@@ -236,7 +232,7 @@
   .open-area .arealist .tomorrow .timelist .opentime{
     background:#98cf4a;
   }
-  .open-area .arealist-wrapper .loading-container{
+  .open-area .loading-container{
     position: absolute;
     width: 100%;
     top: 60%;
