@@ -1,48 +1,49 @@
 <template>
   <div class="search">
-      <div class="searchbox-wrapper">
-        <search-box ref="searchBox" @query="onQueryChange"></search-box>
-      </div>
-      <div class="recommends" v-show="!showResult">
-        <scroll class="recommends-scroll" ref="recommendsScroll" :data="totalList" >
-          <div>
-            <div class="types">
-              <h1 class="title">玩法类型</h1>
-              <ul class="items-list">
-                <li class="type-item" v-for="item in types" @click="selectItem(item.typename)">{{item.typename}}</li>
-              </ul>
-            </div>
-            <div class="hots">
-              <h1 class="title">热门题材</h1>
-              <ul class="items-list">
-                <li class="type-item" v-for="item in hots" @click="selectItem(item.name)">{{item.name}}</li>
-              </ul>
-            </div>
-            <div class="search-history border1px-top" v-show="historyList.length>0">
-              <h1 class="history-title">
-                <span class="title-text">搜索历史</span>
-                <span class="clear" @click="clearHistory">
-                  <i class="iconfont icon-delete"></i>清空
-                </span>
-              </h1>
-              <ul class="history-list">
-                <li class="type-item" v-for="item in historyList" @click="selectItem(item)">{{item}}</li>
-              </ul>
-            </div>
+    <div class="searchbox-wrapper">
+      <search-box ref="searchBox" @query="onQueryChange"></search-box>
+    </div>
+    <div class="recommends" v-show="!showResult">
+      <scroll class="recommends-scroll" ref="recommendsScroll" :data="totalList" >
+        <div>
+          <div class="types">
+            <h1 class="title">玩法类型</h1>
+            <ul class="items-list">
+              <li class="type-item" v-for="item in types" @click="selectItem(item.typename)">{{item.typename}}</li>
+            </ul>
           </div>
-        </scroll>
-      </div>
-      <div class="search-result" v-show="showResult">
-        <scroll class="search-scroll" :data="searchResult" v-show="searchResult.length>0">
-          <game-list :data="searchResult" @toDetail="toDetail" @download="download"></game-list>
-        </scroll>
-        <div class="no-result" v-show="searchResult.length===0">
-          <div>
-            <i class="iconfont icon-shibai"></i>
+          <div class="hots">
+            <h1 class="title">热门题材</h1>
+            <ul class="items-list">
+              <li class="type-item" v-for="item in hots" @click="selectItem(item.name)">{{item.name}}</li>
+            </ul>
           </div>
-          <div> 没有找到,请换个词试试</div>
+          <div class="search-history border1px-top" v-show="historyList.length>0">
+            <h1 class="history-title">
+              <span class="title-text">搜索历史</span>
+              <span class="clear" @click="clearHistory">
+                <i class="iconfont icon-delete"></i>清空
+              </span>
+            </h1>
+            <ul class="history-list">
+              <li class="type-item" v-for="item in historyList" @click="selectItem(item)">{{item}}</li>
+            </ul>
+          </div>
         </div>
+      </scroll>
+    </div>
+    <div class="search-result" v-show="showResult">
+      <scroll class="search-scroll" :data="searchResult" v-show="searchResult.length>0">
+        <game-list :data="searchResult" @toDetail="toDetail" @download="download"></game-list>
+      </scroll>
+      <div class="no-result" v-show="searchResult.length===0">
+        <div>
+          <i class="iconfont icon-shibai"></i>
+        </div>
+        <div> 没有找到,请换个词试试</div>
       </div>
+    </div>
+    <router-view></router-view>
   </div>
 </template>
 
@@ -102,7 +103,7 @@
         this.historyList = clearSearch();
       },
       toDetail(item){
-        this.$router.push({path:'/game/'+item.gameid});
+        this.$router.push({path:'/search/'+item.gameid});
       },
       download(item){
         console.log(item.name);
