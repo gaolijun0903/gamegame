@@ -26,7 +26,7 @@
                 </span>
               </h1>
               <ul class="history-list">
-                <li class="type-item" v-for="item in historyList">{{item}}</li>
+                <li class="type-item" v-for="item in historyList" @click="selectItem(item)">{{item}}</li>
               </ul>
             </div>
           </div>
@@ -70,7 +70,6 @@
     },
     created(){
       this.initData();
-      console.log(this.historyList);
     },
     methods:{
       initData(){
@@ -93,8 +92,8 @@
           console.log(res)
           this.searchResult = res.gamelist;
         })
-        this.historyList = saveSearch(newQuery); //添加到搜索历史的缓存中添加到搜索历史的缓存中bbbbbbb
-        this.$refs.recommendsScroll.refresh();   //TODO这里有bug，待解决--
+        this.historyList = saveSearch(newQuery); //添加到搜索历史的缓存中
+        this.$refs.recommendsScroll.refresh();
       },
       selectItem(item){
         this.$refs.searchBox.setQuery(item);
