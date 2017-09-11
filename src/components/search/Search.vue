@@ -3,36 +3,39 @@
       <div class="searchbox-wrapper">
         <search-box ref="searchBox" @query="onQueryChange"></search-box>
       </div>
-      <div class="recommends" v-if="!query">
-        <div class="types">
-          <h1 class="title">玩法类型</h1>
-          <ul class="items-list">
-            <li class="type-item" v-for="item in types" @click="selectItem(item.typename)">{{item.typename}}</li>
-          </ul>
-        </div>
-        <div class="hots">
-          <h1 class="title">热门题材</h1>
-          <ul class="items-list">
-            <li class="type-item" v-for="item in hots" @click="selectItem(item.name)">{{item.name}}</li>
-          </ul>
-        </div>
-        <div class="search-history border1px-top" v-show="historyList.length>0">
-          <h1 class="history-title">
-            <span class="title-text">搜索历史</span>
-            <span class="clear" @click="clearHistory">
-              <i class="iconfont icon-delete"></i>清空
-            </span>
-          </h1>
-          <ul class="history-list">
-            <li class="type-item" v-for="item in historyList">{{item}}</li>
-          </ul>
-        </div>
+      <div class="recommends" v-show="!showResult">
+        <scroll class="recommends-scroll" ref="recommendsScroll" :data="historyList" >
+          <div>
+            <div class="types">
+              <h1 class="title">玩法类型</h1>
+              <ul class="items-list">
+                <li class="type-item" v-for="item in types" @click="selectItem(item.typename)">{{item.typename}}</li>
+              </ul>
+            </div>
+            <div class="hots">
+              <h1 class="title">热门题材</h1>
+              <ul class="items-list">
+                <li class="type-item" v-for="item in hots" @click="selectItem(item.name)">{{item.name}}</li>
+              </ul>
+            </div>
+            <div class="search-history border1px-top" v-show="historyList.length>0">
+              <h1 class="history-title">
+                <span class="title-text">搜索历史</span>
+                <span class="clear" @click="clearHistory">
+                  <i class="iconfont icon-delete"></i>清空
+                </span>
+              </h1>
+              <ul class="history-list">
+                <li class="type-item" v-for="item in historyList">{{item}}</li>
+              </ul>
+            </div>
+          </div>
+        </scroll>
       </div>
-      <div class="search-result" v-if="query">
+      <div class="search-result" v-show="showResult">
         <scroll class="search-scroll" :data="searchResult" v-show="searchResult.length>0">
           <game-list :data="searchResult" @toDetail="toDetail" @download="download"></game-list>
         </scroll>
-
         <div class="no-result" v-show="searchResult.length===0">
           <div>
             <i class="iconfont icon-shibai"></i>
@@ -48,14 +51,15 @@
   import scroll from 'base/scroll/scroll'
   import gameList from 'base/game-list/game-list'
   import {getRecommendList,getSearchList} from 'api/search'
+  import {loadSearch,saveSearch,clearSearch} from 'common/js/cache'
 
   export default {
     data() {
       return {
-        query:'',
+        showResult:false,
         types:[],
         hots:[],
-        historyList:['卡牌','策略','挂机','口袋妖怪','热血传奇','煮酒三国'],
+        historyList:loadSearch(),
         searchResult:[]
       }
     },
@@ -73,23 +77,24 @@
         })
       },
       onQueryChange(newQuery){
-        this.query = newQuery;  //query控制搜索结果列表的显示和隐藏
-        if(this.query===''){
+        if(newQuery===''){
+          this.showResult = false;
           return
         }
-        getSearchList(this.query).then((res)=>{
+        getSearchList(newQuery).then((res)=>{
+          this.showResult = true;
           console.log('search-result')
           console.log(res)
           this.searchResult = res.gamelist;
         })
+        this.historyList = saveSearch(newQuery); //添加到搜索历史的缓存中
+        this.$refs.recommendsScroll.refresh();   //TODO这里有bug，待解决
       },
       selectItem(item){
         this.$refs.searchBox.setQuery(item);
-        //添加到搜索历史记录中
-        //TODO
       },
       clearHistory(){
-        this.historyList = [];
+        this.historyList = clearSearch();
       },
       toDetail(item){
         this.$router.push({path:'/game/'+item.gameid});
@@ -126,6 +131,16 @@
     padding:6px;
     background: #12cdb0;
   }
+  .search .recommends,.search .search-result{
+    position: absolute;
+    top: 42px;
+    bottom: 0;
+    width:100%;
+  }
+  .search .recommends .recommends-scroll, .search .search-result .search-scroll{
+    height: 100%;
+    overflow: hidden;
+  }
   .search .recommends .title{
     margin-top: 10px;
     width: 66px;
@@ -141,6 +156,11 @@
     margin: 0 10px 10px 0;
     display: inline-block;
     vertical-align: middle;
+    height: 30px;
+    max-width: 90%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     padding: 0 10px;
     font-size: 12px;
     line-height: 30px;
@@ -179,17 +199,6 @@
     border: 1px solid #00a98f;
     color: #00a98f;
     background: #fff;
-  }
-  .search .search-result{
-    position: absolute;
-    top: 42px;
-    bottom: 0;
-    width:100%;
-
-  }
-  .search .search-result .search-scroll{
-    height: 100%;
-    overflow: hidden;
   }
   .search .search-result .no-result{
     position: absolute;
