@@ -1,9 +1,7 @@
 import storage from 'good-storage'
 
 const SEARCH_KEY = '__search__'
-const SEARCH_MAX_LENGTH = 10
-
-
+const SEARCH_MAX_LENGTH = 15
 
 function insertArray(arr,val,compare,maxLen){
 	const index = arr.findIndex(compare)
@@ -18,7 +16,6 @@ function insertArray(arr,val,compare,maxLen){
 		arr.pop()
 	}
 }
-
 export function saveSearch(query){
 	let searches = storage.get(SEARCH_KEY,[])
 	insertArray(searches,query,(item)=>{
@@ -27,11 +24,9 @@ export function saveSearch(query){
 	storage.set(SEARCH_KEY,searches)
 	return searches
 }
-
 export function loadSearch(){
 	return storage.get(SEARCH_KEY,[])
 }
-
 export function clearSearch(){
 	storage.remove(SEARCH_KEY)
 	return []
