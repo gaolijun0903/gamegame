@@ -33,7 +33,7 @@
       </scroll>
     </div>
     <div class="search-result" v-show="showResult">
-      <scroll class="search-scroll" :data="searchResult" v-show="searchResult.length>0">
+      <scroll class="search-scroll" :data="searchResult" v-show="searchResult.length>0" @beforeScrollStart="blurInput">
         <game-list :data="searchResult" @toDetail="toDetail" @download="download"></game-list>
       </scroll>
       <div class="no-result" v-show="searchResult.length===0">
@@ -99,6 +99,10 @@
       selectItem(item){
         this.$refs.searchBox.setQuery(item);
       },
+      blurInput(){
+        alert('blur')
+        this.$refs.searchBox.blur();
+      },
       clearHistory(){
         this.historyList = clearSearch();
       },
@@ -142,6 +146,10 @@
     top: 42px;
     bottom: 0;
     width:100%;
+    background: #fff;
+  }
+  .search .search-result{
+    bottom: -60px;
   }
   .search .recommends .recommends-scroll, .search .search-result .search-scroll{
     height: 100%;
