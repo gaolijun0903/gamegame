@@ -87,13 +87,13 @@
       }
     },
     created(){
-      console.log('game-detail-created')
+//      console.log('game-detail-created')
       this.initData()
     },
     methods:{
       initData(){
         getDetail(this.$route.params.id).then((res)=>{
-          console.log(res);
+//          console.log(res);
           this.imgs = this.normalizeImage(res.img);
           this.$nextTick(()=>{
             this.$refs.scrollx.initScrollX();
