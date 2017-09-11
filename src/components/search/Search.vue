@@ -4,7 +4,7 @@
         <search-box ref="searchBox" @query="onQueryChange"></search-box>
       </div>
       <div class="recommends" v-show="!showResult">
-        <scroll class="recommends-scroll" ref="recommendsScroll" :data="historyList" >
+        <scroll class="recommends-scroll" ref="recommendsScroll" :data="totalList" >
           <div>
             <div class="types">
               <h1 class="title">玩法类型</h1>
@@ -63,8 +63,14 @@
         searchResult:[]
       }
     },
+    computed:{
+      totalList(){
+        return this.types.concat(this.hots.concat(this.historyList))
+      }
+    },
     created(){
       this.initData();
+      console.log(this.historyList);
     },
     methods:{
       initData(){
@@ -87,8 +93,8 @@
           console.log(res)
           this.searchResult = res.gamelist;
         })
-        this.historyList = saveSearch(newQuery); //添加到搜索历史的缓存中
-        this.$refs.recommendsScroll.refresh();   //TODO这里有bug，待解决
+        this.historyList = saveSearch(newQuery); //添加到搜索历史的缓存中添加到搜索历史的缓存中bbbbbbb
+        this.$refs.recommendsScroll.refresh();   //TODO这里有bug，待解决--
       },
       selectItem(item){
         this.$refs.searchBox.setQuery(item);
