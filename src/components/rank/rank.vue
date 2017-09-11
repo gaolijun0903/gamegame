@@ -1,7 +1,7 @@
 <template>
   <div class="rank">
     <div class="rank-wrapper">
-
+排行
     </div>
   </div>
 </template>
