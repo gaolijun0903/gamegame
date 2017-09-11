@@ -9,21 +9,21 @@
       <div>
         <div class="game-detail-header">
           <div class="pic">
-            <img width="60" height="60" src="http://app.kf989.com/uploads/KZMyCKxHRa.png">
+            <img width="60" height="60" :src="detailObj.ioc_path" :onerror="defaultImg">
           </div>
           <div class="desc">
-            <h1 class="name">幻界之域-全民修仙巨制</h1>
+            <h1 class="name">{{detailObj.name}}</h1>
             <div class="size-role-percent">
-              <span class="roundbg size">123MB</span>
-              <span class="roundbg role">角色</span>
-              <span class="roundbg percent">比例&nbsp;1:1000</span>
+              <span class="roundbg size">{{detailObj.apksize}}</span>
+              <span class="roundbg role">{{detailObj.typename}}</span>
+              <span class="roundbg percent">比例&nbsp;1:{{detailObj.bl}}</span>
             </div>
-            <div class="sketch">asssaada</div>
+            <div class="sketch">{{detailObj.detailed}}</div>
           </div>
-          <div class="recommend">荐</div>
+          <div class="recommend" v-show="detailObj.tj==='1'">荐</div>
         </div>
-        <div class="scroll-x-wrapper">
-          <scroll-x>
+        <div class="scroll-x-wrapper" v-show="imgs.length>0">
+          <scroll-x ref="scrollx" :data="imgs">
             <div class="img-detail" v-for="item in imgs">
               <img width="110" :src="item">
             </div>
@@ -54,6 +54,9 @@
           <span class="detail-tab-inner">{{item}}</span>
         </div>
       </div>
+      <div class="download-btn-wrapper">
+        <div class="download-btn" @click="download">安装</div>
+      </div>
     </scroll>
   </transition>
 </template>
@@ -65,42 +68,49 @@
   import loading from 'base/loading/loading'
   import warning from 'base/warning/warning'
   import {getDetail} from 'api/game'
-
-
-  import {getOpenAreaList} from 'api/open'
-  import {normalizeImage2} from 'common/js/game-img'
+  import {cloneObj} from "common/js/util";
 
   export default {
     data(){
       return{
-        detailTabs:[  '点评','开服','礼包'],
+        detailObj:{
+          ioc_path: "static/img/error.png"
+        },
+        imgs:[],
+        datalist:[],
+        detailTabs:['福利','开服','礼包'],
         currentIndex:0,
         probeType:3,
         listenScroll:true,
         showfixedtop:false,
-        datalist:[],
-        imgs:[
-          "http://app.kf989.com/uploads/KZMyCKxHRa.png",
-          "http://app.kf989.com/uploads/KZMyCKxHRa.png",
-          "http://app.kf989.com/uploads/KZMyCKxHRa.png",
-          "http://app.kf989.com/uploads/KZMyCKxHRa.png",
-          "http://app.kf989.com/uploads/KZMyCKxHRa.png",
-          "http://app.kf989.com/uploads/KZMyCKxHRa.png",
-          "http://app.kf989.com/uploads/KZMyCKxHRa.png"
-        ]
+        defaultImg: 'this.src='+'"static/img/error.png"'
       }
     },
-    mounted(){
+    created(){
+      console.log('game-detail-created')
       this.initData()
     },
     methods:{
       initData(){
-        /*getDetail(this.$route.params.id).then((res)=>{
-          console.log(res)
-        })*/
-        getOpenAreaList().then((res)=>{
-          this.datalist = res.today;
+        getDetail(this.$route.params.id).then((res)=>{
+          console.log(res);
+          this.imgs = this.normalizeImage(res.img);
+          this.$nextTick(()=>{
+            this.$refs.scrollx.initScrollX();
+          })
+          this.detailObj = cloneObj(res);
+          this.detailObj.ioc_path = 'http://app.kf989.com' + res.ioc_path;
+
+        }).catch((err)=>{
+          console.log('detail-err')
+         // this.detailObj.ioc_path = "static/img/error.png"
         })
+      },
+      normalizeImage(list){
+        var newList = list.map((item)=>{
+          return 'http://app.kf989.com' + item;
+        })
+        return newList
       },
       selectItem(index){
         this.currentIndex = index;
@@ -108,10 +118,17 @@
       scrollPos(pos){
         console.log(pos.y)
         if(Math.abs(pos.y)>=295){
-          this.showfixedtop = true
+          this.showfixedtop = true;
         }else{
-          this.showfixedtop = false
+          this.showfixedtop = false;
         }
+      },
+      imgErr(){
+
+      },
+      download(){
+        console.log(this.detailObj.apkname);
+        //window.location.href = "http://f3.market.xiaomi.com/download/AppStore/06e095d3f6a226d76d97e3bb3c30f5e171e4252fa/com.tencent.qqmusic.apk";
       }
     },
     components:{
@@ -248,9 +265,29 @@
   .game-detail .detail-tab-container{
     padding:20px 15px 0;
     height: 800px;
-    background: #ccc;
+    /*background: #ccc;*/
   }
   .game-detail .detail-tab-container .detail-content{
 
+  }
+
+  .game-detail  .download-btn-wrapper{
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    /*background: #eaeaea;*/
+  }
+  .game-detail  .download-btn-wrapper .download-btn{
+    margin:6px auto;
+    width: 70%;
+    height: 48px;
+    font-size: 22px;
+    line-height: 48px;
+    text-align: center;
+    background: #00a98f;
+    color: #fff;
+    border-radius:25px;
   }
 </style>

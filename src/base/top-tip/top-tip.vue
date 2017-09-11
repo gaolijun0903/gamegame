@@ -1,7 +1,10 @@
 <template>
 <transition name="drop">
 	<div class="top-tip" v-show="showFlag" @click.stop="hide">
-		<slot></slot>
+    <div class="tip-title">
+      <i class="icon-ok"></i>
+      <span class="text">{{tiptext}}</span>
+    </div>
 	</div>
 </transition>
 </template>
@@ -16,12 +19,14 @@
 		},
 		data(){
 			return {
-				showFlag:false
+				showFlag:false,
+        tiptext: ''
 			}
 		},
 		methods:{
-			show(){
+			show(num){
 				this.showFlag = true;
+				this.tiptext = num===0? '刷新成功' : '网络出错，刷新失败'
 				clearTimeout(this.timer);
 				this.timer = setTimeout(()=>{
 					this.hide();

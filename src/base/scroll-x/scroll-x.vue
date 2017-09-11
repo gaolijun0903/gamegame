@@ -10,23 +10,46 @@
   import BScroll from 'better-scroll'
 
   export default {
+    props:{
+      data: {
+        type: Array,
+        default: null
+      },
+      refreshDelay:{
+        type:Number,
+        default:20
+      }
+    },
     mounted(){
-      setTimeout(()=>{
-        this._setWidth();
-        this._initScroll();
-      },20)
+
     },
     methods:{
+      initScrollX(){
+        this._setWidth();
+        this._initScroll();
+      },
       _setWidth(){
         this.children = this.$refs.scrollGroup.children;
+//        console.log('scrollX--children')
+//        console.log(this.children)
         let width = this.children[0].clientWidth * this.children.length;
         this.$refs.scrollGroup.style.width = width + 'px';
       },
       _initScroll(){
-        this.slider = new BScroll(this.$refs.scrollX,{
+        this.scroll = new BScroll(this.$refs.scrollX,{
           scrollX: true,
           scrollY: false
         })
+      },
+      refresh(){
+        this.scroll && this.scroll.refresh();
+      }
+    },
+    watch: {
+      data(){
+        setTimeout(()=>{
+          this.refresh();
+        },this.refreshDelay)
       }
     }
   }

@@ -1,11 +1,11 @@
 <template>
   <div class="open-area">
-    <scroll class="arealist-wrapper"
+    <scroll ref="scroll" class="arealist-wrapper"
             :data="allList"
             v-if="allList.length"
             :pulldown="pulldown"
             :probe-type="probeType"
-            @scrollNearTop="refresh()"
+            @scrollNearTop="refresh"
     >
       <div class="arealist">
         <div class="refresh">下拉刷新</div>
@@ -50,18 +50,12 @@
           </div>
         </div>
       </div>
-      <div class="loading-container" v-show="showLoading">
-        <loading></loading>
-    	</div>
-    </scroll>
 
-    <warning ref="warning" @refresh="refresh"></warning>
-    <top-tip ref="toptip">
-      <div class="tip-title">
-        <i class="icon-ok"></i>
-        <span class="text">刷新成功</span>
-      </div>
-    </top-tip>
+    </scroll>
+    <div class="loading-container" v-show="showLoading">
+      <loading></loading>
+    </div>
+    <top-tip ref="toptip"></top-tip>
     <router-view></router-view>
   </div>
 </template>
@@ -71,7 +65,6 @@
   import topTip from 'base/top-tip/top-tip'
   import greyBar from 'base/grey-bar/grey-bar'
   import loading from 'base/loading/loading'
-  import warning from 'base/warning/warning'
   import {getOpenAreaList} from 'api/open'
   import {normalizeImage2} from 'common/js/game-img'
   import storage from 'good-storage'
@@ -94,50 +87,53 @@
       }
     },
     mounted(){
-      this.initData();
+      this.initData(false);
     },
     methods:{
-      initData(refresh){
-        this.showLoading = true;
+      initData(ispulldown){
+        if(!ispulldown){
+          this.showLoading = true;
+        }
         getOpenAreaList().then((res)=>{
-          console.log(res)
-          // 存储更新storage数据
-          storage.set('openarea-json',res)
           this.showLoading = false;
-          this.todayList= normalizeImage2(res.today)
-          this.tomorrowList = normalizeImage2(res.tomorrow)
-          if(refresh){
-            this.$refs.toptip.show();
+          console.log(res);
+          storage.set('openarea-json',res);
+          this.todayList= normalizeImage2(res.today);
+          this.tomorrowList = normalizeImage2(res.tomorrow);
+          if(ispulldown){
+            this.$refs.toptip.show(0);
           }
         }).catch((err)=>{
+          this.showLoading = false;
+          if(ispulldown){
+            this.$refs.toptip.show(1);
+            return
+          }
           var openareajson = storage.get('openarea-json', 404);
           if(openareajson === 404){
-          	this.$refs.warning.show();
-          	this.showLoading = false
+            this.$refs.toptip.show();
           }else{
-          	this.showLoading = false;
-	          this.todayList= normalizeImage2(openareajson.today)
-	          this.tomorrowList = normalizeImage2(openareajson.tomorrow)
+	          this.todayList= normalizeImage2(openareajson.today);
+	          this.tomorrowList = normalizeImage2(openareajson.tomorrow);
           }
         })
       },
       toDetail(item){
-        this.$router.push({path:'/openarea/'+item.gameid})
+        this.$router.push({path:'/openarea/'+item.gameid});
       },
       refresh(){
-        this.initData(true)
+        this.initData(true);
       }
     },
     beforeRouteEnter(to, from, next){
-    	next(true)
-    	window.document.location = "js://webview?network=1"
+	    	next(true)
+	    	window.document.location = "js://webview?network=1"
     },
     components:{
       scroll,
       greyBar,
       topTip,
-      loading,
-      warning
+      loading
     }
   }
 </script>
@@ -178,7 +174,6 @@
     color: #fff;
   }
   .open-area .arealist .timelist .openlist{
-    /*margin-bottom:50px;*/
     padding:0 15px;
   }
   .open-area .arealist .timelist .openlist .opengame{
@@ -237,10 +232,10 @@
   .open-area .arealist .tomorrow .timelist .opentime{
     background:#98cf4a;
   }
-  .open-area .arealist-wrapper .loading-container{
+  .open-area .loading-container{
     position: absolute;
     width: 100%;
-    top: 160%;
+    top: 60%;
     transform: translateY(-50%);
   }
 </style>

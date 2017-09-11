@@ -7,9 +7,9 @@
     >
       <div>
         <div class="slider-wrapper" v-if="focuslist.length">
-          <slider>
+          <slider ref="slider">
             <div v-for="item in focuslist" @click="toDetail(item)">
-                <img class="needsclick" @load="loadImage" :src="item.imgpath" />
+                <img class="needsclick" @load="loadImage" :src="item.imgpath"/>
             </div>
           </slider>
         </div>
@@ -18,10 +18,10 @@
             <h1 class="title-text">新游下载</h1>
           </div>
           <div class="newgamelist" v-if="newgamelist.length">
-            <scroll-x>
+            <scroll-x ref="scrollx">
               <li class="newgamelist-item" v-for="item in newgamelist" @click="toDetail(item)">
                 <div class="pic">
-                  <img width="60" height="60" :src="item.ioc_path" />
+                  <img width="60" height="60" :src="item.ioc_path" :onerror="defaultImg"/>
                 </div>
                 <div class="name">{{item.name}}</div>
                 <div class="typename">{{item.typename}}</div>
@@ -33,25 +33,7 @@
         <grey-bar></grey-bar>
         <div class="gamelist-wrapper">
           <ul>
-            <li class="gamelist-item border1px " v-for="item in gamelist" @click="toDetail(item)">
-              <div class="pic">
-                <img width="60" height="60" :src="item.ioc_path" />
-              </div>
-              <div class="desc">
-                <div class="name">
-                  <div class="text">{{item.name}}</div>
-                  <icon-tag  v-show="item.tj==='1'"></icon-tag>
-                </div>
-                <div class="size-role-percent">
-                  <span class="roundbg size">{{item.apksize}}MB</span>
-                  <span class="roundbg role">{{item.typename}}</span>
-                  <span class="roundbg percent">比例&nbsp;1:{{item.bl}}</span>
-                </div>
-                <div class="sketch">{{item.sketch}}</div>
-              </div>
-              <div class="download-btn" @click.stop="download(item)">下载</div>
-            </li>
-
+            <game-list :data="gamelist" @toDetail="toDetail" @download="download"></game-list>
             <div class="loadsucc" v-show="loadsucc">
               <loading title="" v-show="hasMore && gamelist.length"></loading>
               <div class="no-more" v-show="!hasMore">
@@ -79,10 +61,9 @@
   import scroll from 'base/scroll/scroll'
   import slider from 'base/slider/slider'
   import scrollX from 'base/scroll-x/scroll-x'
+  import gameList from 'base/game-list/game-list'
   import greyBar from 'base/grey-bar/grey-bar'
-  import iconTag from 'base/icon-tag/icon-tag'
   import loading from 'base/loading/loading'
-  import warning from 'base/warning/warning'
   import {getGamelist,addMoreGamelist} from 'api/game'
   import {normalizeImage} from 'common/js/game-img'
   import storage from 'good-storage'
@@ -97,11 +78,12 @@
         pullup:true,
         loadsucc:false,
         hasMore:true,
-        showLoading:true
+        showLoading:true,
+        defaultImg: 'this.src='+'"static/img/error.png"'
       }
     },
     created(){
-    	console.log('created')
+      console.log('game-created');
       this.initData();
     },
     methods:{
@@ -125,28 +107,28 @@
 	          })
 	        }).catch((err)=>{})
         }else{
-        	this.showLoading = false;
-          this.loadsucc = false;     //加载失败，显示网络出错，不能显示addmore和底线
-
-          //TODO-----------
-          //this.page--;           //首页从缓存读了，联网后该从哪一页加载？
-
-
-
-          console.log('net error')
-          var firPagejson = storage.get('firstpage-json', 404);
-          if(firPagejson===404){
-          	console.log('no storage')
-          }else{
-          	console.log('use storage')
-	          this.focuslist = normalizeImage(firPagejson.focuslist);
-	          this.newgamelist = normalizeImage(firPagejson.newgamelist);
-	          this.$nextTick(()=>{
-              this.gamelist = normalizeImage(firPagejson.gamelist);
-	          })
-          }
-        }
-    		
+			this.showLoading = false;
+			this.loadsucc = false;     //加载失败，显示网络出错，不能显示addmore和底线
+			
+			//TODO-----------
+			//this.page--;           //首页从缓存读了，联网后该从哪一页加载？
+			
+			
+			console.log('net error');
+			var firPagejson = storage.get('firstpage-json', 404);
+			if(firPagejson===404){
+				console.log('no storage');
+			}else{
+          		console.log('use storage');
+				this.focuslist = normalizeImage(firPagejson.focuslist);
+				this.newgamelist = normalizeImage(firPagejson.newgamelist);
+				this.$nextTick(()=>{
+					this.$refs.slider.initSlider();
+					this.$refs.scrollx.initScrollX()
+					this.gamelist = normalizeImage(firPagejson.gamelist);
+		        })
+			}
+       }
       },
       addMore(){
         if(!this.hasMore){
@@ -182,17 +164,16 @@
       }
     },
     beforeRouteEnter(to, from, next){
-    	next(true)
-    	window.document.location = "js://webview?network=1"
+    		next(true)
+	    	window.document.location = "js://webview?network=1"
     },
     components:{
       scroll,
       slider,
       scrollX,
+      gameList,
       greyBar,
-      iconTag,
-      loading,
-      warning
+      loading
     }
   }
 </script>
