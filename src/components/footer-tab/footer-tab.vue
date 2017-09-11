@@ -1,6 +1,6 @@
 <template>
 <div class="footer-tab border1px-top">
-	<router-link tag="div" class="tab-item" to="/game">
+	<router-link tag="div" class="tab-item" to="/game" replace>
 		<div class="tab-inner">
       <div class="icon">
         <i class="iconfont icon-youxi"></i>
@@ -10,7 +10,7 @@
       </div>
     </div>
 	</router-link>
-	<router-link tag="div" class="tab-item" to="/openarea">
+	<router-link tag="div" class="tab-item" to="/openarea" replace>
     <div class="tab-inner">
       <div class="icon">
         <i class="iconfont icon-caidan"></i>
@@ -20,7 +20,7 @@
       </div>
     </div>
 	</router-link>
-	<router-link tag="div" class="tab-item" to="/search">
+	<router-link tag="div" class="tab-item" to="/search" replace>
     <div class="tab-inner">
       <div class="icon">
         <i class="iconfont icon-sousuo1"></i>
@@ -30,7 +30,7 @@
       </div>
     </div>
 	</router-link>
-  <router-link tag="div" class="tab-item" to="/rank">
+  <router-link tag="div" class="tab-item" to="/rank" replace>
     <div class="tab-inner">
       <div class="icon">
         <i class="iconfont icon-paixing"></i>

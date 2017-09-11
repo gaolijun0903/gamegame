@@ -9,7 +9,7 @@
         <div class="slider-wrapper" v-if="focuslist.length">
           <slider ref="slider">
             <div v-for="item in focuslist" @click="toDetail(item)">
-                <img class="needsclick" @load="loadImage" :src="item.imgpath"/>
+                <img class="needsclick" @load="loadImage" :src="item.imgpath" :onerror="defaultLoop"/>
             </div>
           </slider>
         </div>
@@ -69,6 +69,7 @@
   import storage from 'good-storage'
 
   export default{
+  	name: "game",
     data () {
       return {
         focuslist:[],
@@ -79,7 +80,8 @@
         loadsucc:false,
         hasMore:true,
         showLoading:true,
-        defaultImg: 'this.src='+'"static/img/error.png"'
+        defaultImg: 'this.src='+'"static/img/error.png"',
+        defaultLoop: 'this.src='+'"static/img/loop.jpg"'
       }
     },
     created(){
@@ -88,7 +90,7 @@
     },
     methods:{
       initData(){
-      	var isNet = false;
+      	var isNet = true;
       	try{
       		// 检测是否有网络
 	      	isNet = myObj.checknet('检测是否有网络');
@@ -103,32 +105,34 @@
 	          this.focuslist = normalizeImage(res.focuslist);
 	          this.newgamelist = normalizeImage(res.newgamelist);
 	          this.$nextTick(()=>{
+	          	this.$refs.slider.initSlider();
+            	this.$refs.scrollx.initScrollX();
 	            this.gamelist = normalizeImage(res.gamelist);
 	          })
-	        }).catch((err)=>{})
+	        }).catch((err)=>{
+	        	this.useStorage();
+	        })
         }else{
-			this.showLoading = false;
-			this.loadsucc = false;     //加载失败，显示网络出错，不能显示addmore和底线
-			
-			//TODO-----------
-			//this.page--;           //首页从缓存读了，联网后该从哪一页加载？
-			
-			
-			console.log('net error');
-			var firPagejson = storage.get('firstpage-json', 404);
-			if(firPagejson===404){
-				console.log('no storage');
-			}else{
-          		console.log('use storage');
-				this.focuslist = normalizeImage(firPagejson.focuslist);
-				this.newgamelist = normalizeImage(firPagejson.newgamelist);
-				this.$nextTick(()=>{
-					this.$refs.slider.initSlider();
-					this.$refs.scrollx.initScrollX()
-					this.gamelist = normalizeImage(firPagejson.gamelist);
-		        })
-			}
+			this.useStorage();
        }
+      },
+      useStorage(){  // 网络超时以及无网络获取缓存数据，进行展示
+      	this.showLoading = false;
+		this.loadsucc = false;     //加载失败，显示网络出错，不能显示addmore和底线
+		console.log('net error');
+		var firPagejson = storage.get('firstpage-json', 404);
+		if(firPagejson===404){
+			console.log('no storage');
+		}else{
+      		console.log('use storage');
+			this.focuslist = normalizeImage(firPagejson.focuslist);
+			this.newgamelist = normalizeImage(firPagejson.newgamelist);
+			this.$nextTick(()=>{
+				this.$refs.slider.initSlider();
+				this.$refs.scrollx.initScrollX()
+				this.gamelist = normalizeImage(firPagejson.gamelist);
+	        })
+		}
       },
       addMore(){
         if(!this.hasMore){
@@ -164,8 +168,11 @@
       }
     },
     beforeRouteEnter(to, from, next){
-    		next(true)
-	    	window.document.location = "js://webview?network=1"
+		next(true)
+    	window.document.location = "js://webview?network=1"
+    },
+    activated(){
+    	//alert('activated');
     },
     components:{
       scroll,
