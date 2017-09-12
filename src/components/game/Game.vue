@@ -149,7 +149,7 @@
         if (!this.checkLoaded){
           this.$refs.scroll.refresh();
           this.checkLoaded = true;
-          this.setImageHeight(idx)
+//          this.setImageHeight(idx)  //这个方案并不好，resize的时候，高度被固定了
         }
       },
       setImageHeight(idx){
