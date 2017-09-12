@@ -49,7 +49,7 @@ export default{}
 
 <style>
 .footer-tab{
-  position: absolute;
+  position: fixed;
   z-index:-10;
   bottom: 0;
   left:0;

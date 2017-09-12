@@ -93,14 +93,17 @@
           console.log(res)
           this.searchResult = res.gamelist;
         })
-        this.historyList = saveSearch(newQuery); //添加到搜索历史的缓存中
+        window.setTimeout(()=>{
+        	this.historyList = saveSearch(newQuery); //添加到搜索历史的缓存中
+        },1000)
+        this.blurInput();
         this.$refs.recommendsScroll.refresh();
       },
       selectItem(item){
         this.$refs.searchBox.setQuery(item);
       },
       blurInput(){
-        alert('blur')
+        //alert('blur')
         this.$refs.searchBox.blur();
       },
       clearHistory(){
