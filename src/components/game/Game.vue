@@ -8,8 +8,8 @@
       <div>
         <div class="slider-wrapper" v-if="focuslist.length">
           <slider ref="slider">
-            <div v-for="item in focuslist" @click="toDetail(item)">
-                <img class="needsclick" @load="loadImage" :src="item.imgpath"/>
+            <div v-for="(item,index) in focuslist" @click="toDetail(item)">
+                <img class="needsclick" @load="loadImage(index)" :src="item.imgpath"/>
             </div>
           </slider>
         </div>
@@ -45,7 +45,6 @@
             <div class="loadfail" v-show="!loadsucc && !showLoading">
               网络出错了
             </div>
-
           </ul>
         </div>
       </div>
@@ -84,6 +83,8 @@
     },
     created(){
       console.log('game-created');
+//      var bodyWidth = document.getElementsByTagName('body')[0].clientWidth;
+//      console.log(bodyWidth)
       this.initData();
     },
     methods:{
@@ -144,10 +145,20 @@
           this.loadsucc = false;     //加载失败，显示网络出错，不能显示addmore和底线
         })
       },
-      loadImage(){
+      loadImage(idx){
         if (!this.checkLoaded){
           this.$refs.scroll.refresh();
           this.checkLoaded = true;
+          this.setImageHeight(idx)
+        }
+      },
+      setImageHeight(idx){
+        var img = new Image();
+        img.src = this.focuslist[idx].imgpath;
+        let childrens = this.$refs.slider.children;
+        let h = Math.ceil(childrens[idx].clientWidth * img.height/img.width)
+        for (var i=0; i<childrens.length; i++){
+          childrens[i].style.height = h + 'px'
         }
       },
       toDetail(item){
