@@ -66,6 +66,7 @@
   import {getGamelist,addMoreGamelist} from 'api/game'
   import {normalizeImage} from 'common/js/game-img'
   import storage from 'good-storage'
+  import {baseUrl} from "common/js/util"
 
   export default{
   	name: "game",
@@ -85,8 +86,6 @@
     },
     created(){
       console.log('game-created');
-//      var bodyWidth = document.getElementsByTagName('body')[0].clientWidth;
-//      console.log(bodyWidth)
       this.initData();
     },
     methods:{
@@ -174,7 +173,6 @@
         this.$router.push({path:'/game/'+item.gameid});
       },
       download(item){
-        console.log(item.name);
         // 检测是否有网络
         var isNet = true;
       	try{
@@ -182,7 +180,9 @@
 	      	isNet = myObj.checknet('检测是否有网络');
       	}catch(error){}
       	if(isNet){
-      		window.location.href = "http://f3.market.xiaomi.com/download/AppStore/06e095d3f6a226d76d97e3bb3c30f5e171e4252fa/com.tencent.qqmusic.apk";      		
+      		var downurl = baseUrl()+"/download/"+item.apkname+".apk";
+        	console.log(downurl);
+        	window.location.href = downurl;      		
       	}
       }
     },

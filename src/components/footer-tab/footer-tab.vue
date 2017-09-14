@@ -30,7 +30,7 @@
       </div>
     </div>
 	</router-link>
-  <router-link tag="div" class="tab-item" to="/rank" replace>
+  <router-link tag="div" class="tab-item" to="/rank" replace v-if="false">
     <div class="tab-inner">
       <div class="icon">
         <i class="iconfont icon-paixing"></i>

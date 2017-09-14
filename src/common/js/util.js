@@ -42,4 +42,8 @@ export function cloneObj(obj){
   return newobj;
 }
 
+export function baseUrl(){
+	return "http://app.kf989.com";
+}
+
 

@@ -1,5 +1,6 @@
 <template>
   <transition name="slide">
+  	
     <scroll class="game-detail"
             :data="datalist"
             :probe-type="probeType"
@@ -7,6 +8,12 @@
             @scroll="scrollPos"
     >
       <div>
+      	<div class="back-title">
+			    <div class="back" @click="back">
+			      <i class="iconfont icon-fanhui"></i>
+			    </div>
+			    <div class="title">{{detailObj.name}}</div>
+		    </div>
         <div class="game-detail-header">
           <div class="pic">
             <img width="60" height="60" :src="detailObj.ioc_path" :onerror="defaultImg">
@@ -14,11 +21,11 @@
           <div class="desc">
             <h1 class="name">{{detailObj.name}}</h1>
             <div class="size-role-percent">
-              <span class="roundbg size">{{detailObj.apksize}}</span>
+             <!-- <span class="roundbg size">{{detailObj.apksize}}MB</span>-->
               <span class="roundbg role">{{detailObj.typename}}</span>
-              <span class="roundbg percent">比例&nbsp;1:{{detailObj.bl}}</span>
+              <span class="roundbg percent">充值比例&nbsp;1:{{detailObj.bl}}</span>
             </div>
-            <div class="sketch">{{detailObj.detailed}}</div>
+            <div class="sketch">{{detailObj.apksize}}MB</div>
           </div>
           <div class="recommend" v-show="detailObj.tj==='1'">荐</div>
         </div>
@@ -38,13 +45,13 @@
           </div>
           <div class="detail-tab-container">
             <div class="detail-content" v-if="currentIndex===0">
-              点评
+            	<p>{{detailObj.detailed}}</p>
             </div>
             <div class="detail-content" v-if="currentIndex===1">
-              开服
+              	开服
             </div>
             <div class="detail-content" v-if="currentIndex===2">
-              礼包
+              	礼包
             </div>
           </div>
         </div>
@@ -55,7 +62,7 @@
         </div>
       </div>
       <div class="download-btn-wrapper">
-        <div class="download-btn" @click="download">安装</div>
+        <div class="download-btn" @click="download">下载</div>
       </div>
     </scroll>
   </transition>
@@ -68,7 +75,7 @@
   import loading from 'base/loading/loading'
   import warning from 'base/warning/warning'
   import {getDetail} from 'api/game'
-  import {cloneObj} from "common/js/util";
+  import {cloneObj, baseUrl} from "common/js/util"
 
   export default {
     data(){
@@ -78,7 +85,7 @@
         },
         imgs:[],
         datalist:[],
-        detailTabs:['福利','开服','礼包'],
+        detailTabs:['福利'/*,'开服','礼包'*/],
         currentIndex:0,
         probeType:3,
         listenScroll:true,
@@ -99,16 +106,19 @@
             this.$refs.scrollx.initScrollX();
           })
           this.detailObj = cloneObj(res);
-          this.detailObj.ioc_path = 'http://app.kf989.com' + res.ioc_path;
+          this.detailObj.ioc_path = baseUrl() + res.ioc_path;
 
         }).catch((err)=>{
           console.log('detail-err')
          // this.detailObj.ioc_path = "static/img/error.png"
         })
       },
+      back(){
+        this.$router.back();
+      },
       normalizeImage(list){
         var newList = list.map((item)=>{
-          return 'http://app.kf989.com' + item;
+          return baseUrl() + item;
         })
         return newList
       },
@@ -116,8 +126,8 @@
         this.currentIndex = index;
       },
       scrollPos(pos){
-        console.log(pos.y)
-        if(Math.abs(pos.y)>=295){
+        //console.log(pos.y)(295+136)
+        if(Math.abs(pos.y)>=331){
           this.showfixedtop = true;
         }else{
           this.showfixedtop = false;
@@ -127,8 +137,9 @@
 
       },
       download(){
-        console.log(this.detailObj.apkname);
-        //window.location.href = "http://f3.market.xiaomi.com/download/AppStore/06e095d3f6a226d76d97e3bb3c30f5e171e4252fa/com.tencent.qqmusic.apk";
+        var downurl = baseUrl()+"/download/"+this.detailObj.apkname+".apk";
+        console.log(downurl);
+        window.location.href = downurl;
       }
     },
     components:{
@@ -158,6 +169,30 @@
     bottom:0;
     width:100%;
     background: #fff;
+  }
+  .back-title{
+    height:36px;
+    background: #12cdb0;
+  }
+  .back-title .back{
+    position: absolute;
+    top: 0;
+    left: 6px;
+    z-index: 50;
+    color:#FFFFFF;
+  }
+  
+  .back-title .title{
+    line-height: 36px;
+    text-align: center;
+    color:#FFFFFF;
+  }
+  .back .iconfont.icon-fanhui{
+    display: block;
+    font-size: 22px;
+    padding: 0px 6px;
+    line-height: 36px;
+    color:#FFFFFF;
   }
   .game-detail .game-detail-header{
     display: flex;
@@ -203,7 +238,7 @@
   }
   .game-detail .game-detail-header .desc .sketch{
     font-size:12px;
-    line-height:18px;
+    line-height:20px;
     padding-right:20px;
     color: #a4a4a4;
     overflow: hidden;
@@ -281,13 +316,13 @@
   }
   .game-detail  .download-btn-wrapper .download-btn{
     margin:6px auto;
-    width: 70%;
-    height: 48px;
+    width: 95%;
+    height: 45px;
     font-size: 22px;
-    line-height: 48px;
+    line-height: 45px;
     text-align: center;
     background: #00a98f;
     color: #fff;
-    border-radius:25px;
+    border-radius:5px;
   }
 </style>

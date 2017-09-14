@@ -53,6 +53,7 @@
   import gameList from 'base/game-list/game-list'
   import {getRecommendList,getSearchList} from 'api/search'
   import {loadSearch,saveSearch,clearSearch} from 'common/js/cache'
+  import {baseUrl} from "common/js/util"
 
   export default {
     data() {
@@ -113,8 +114,17 @@
         this.$router.push({path:'/search/'+item.gameid});
       },
       download(item){
-        console.log(item.name);
-        window.location.href = "http://f3.market.xiaomi.com/download/AppStore/06e095d3f6a226d76d97e3bb3c30f5e171e4252fa/com.tencent.qqmusic.apk";
+      	// 检测是否有网络
+        var isNet = true;
+      	try{
+      		// 检测是否有网络
+	      	isNet = myObj.checknet('检测是否有网络');
+      	}catch(error){}
+      	if(isNet){
+      		var downurl = baseUrl()+"/download/"+item.apkname+".apk";
+        	console.log(downurl);
+        	window.location.href = downurl;      		
+      	}
       }
     },
     beforeRouteEnter(to, from, next){

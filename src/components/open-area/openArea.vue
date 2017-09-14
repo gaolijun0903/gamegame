@@ -91,20 +91,40 @@
     },
     methods:{
       initData(ispulldown){
-        if(!ispulldown){
-          this.showLoading = true;
-        }
-        getOpenAreaList().then((res)=>{
-          this.showLoading = false;
-          console.log(res);
-          storage.set('openarea-json',res);
-          this.todayList= normalizeImage2(res.today);
-          this.tomorrowList = normalizeImage2(res.tomorrow);
-          if(ispulldown){
-            this.$refs.toptip.show(0);
-          }
-        }).catch((err)=>{
-          this.showLoading = false;
+      	var isNet = true;
+      	try{
+      		// 检测是否有网络
+	      	isNet = myObj.checknet('检测是否有网络');
+      	}catch(error){}
+	      if(isNet){
+	        if(!ispulldown){
+	          this.showLoading = true;
+	        }
+	        getOpenAreaList().then((res)=>{
+	          this.showLoading = false;
+	          console.log(res);
+	          storage.set('openarea-json',res);
+	          this.todayList= normalizeImage2(res.today);
+	          this.tomorrowList = normalizeImage2(res.tomorrow);
+	          if(ispulldown){
+	            this.$refs.toptip.show(0);
+	          }
+	        }).catch((err)=>{
+	          this.showLoading = false;
+	          if(ispulldown){
+	            this.$refs.toptip.show(1);
+	            return
+	          }
+	          var openareajson = storage.get('openarea-json', 404);
+	          if(openareajson === 404){
+	            this.$refs.toptip.show();
+	          }else{
+		          this.todayList= normalizeImage2(openareajson.today);
+		          this.tomorrowList = normalizeImage2(openareajson.tomorrow);
+	          }
+	        })
+        }else{
+        	this.showLoading = false;
           if(ispulldown){
             this.$refs.toptip.show(1);
             return
@@ -116,7 +136,7 @@
 	          this.todayList= normalizeImage2(openareajson.today);
 	          this.tomorrowList = normalizeImage2(openareajson.tomorrow);
           }
-        })
+        }
       },
       toDetail(item){
         this.$router.push({path:'/openarea/'+item.gameid});
