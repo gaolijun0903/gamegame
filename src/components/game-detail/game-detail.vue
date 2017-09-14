@@ -31,7 +31,7 @@
         </div>
         <div class="scroll-x-wrapper" v-show="imgs.length>0">
           <scroll-x ref="scrollx" :data="imgs">
-            <div class="img-detail" v-for="item in imgs">
+            <div class="img-detail" v-for="(item, index) in imgs" @click="toPhotoView(index, imgs)">
               <img width="110" :src="item">
             </div>
           </scroll-x>
@@ -135,6 +135,14 @@
       },
       imgErr(){
 
+      },
+      toPhotoView(index, imgs){
+      	console.log('item->'+index);
+      	console.log(imgs)
+      	if(window.myObj){
+      		imgs = window.JSON.stringify(imgs);
+      		window.myObj.openImage(index, imgs);
+      	}
       },
       download(){
         var downurl = baseUrl()+"/download/"+this.detailObj.apkname+".apk";
