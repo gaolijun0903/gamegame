@@ -161,9 +161,16 @@
       	}
       },
       download(){
-        var downurl = baseUrl()+"/download/"+this.detailObj.apkname+".apk";
-        console.log(downurl);
-        window.location.href = downurl;
+        // 检测是否有网络
+        var isNet = true;
+      	try{
+      		// 检测是否有网络
+	      	isNet = myObj.checknet('检测是否有网络');
+      	}catch(error){}
+      	if(isNet){
+      		var downurl = baseUrl()+"/download/"+this.detailObj.apkname+".apk";
+        	window.location.href = downurl;      		
+      	}
       },
       resetfetch(){
       	this.showLoading = true;
