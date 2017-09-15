@@ -105,11 +105,8 @@
         }).catch((err)=>{
           this.showLoading = false;
           this.loadsucc = false;     //加载失败，显示网络出错，不能显示addmore和底线
-
           //TODO-----------
           //this.page--;           //首页从缓存读了，联网后该从哪一页加载？
-
-
           console.log('net error');
           var firPagejson = storage.get('firstpage-json', 404);
           if(firPagejson===404){
