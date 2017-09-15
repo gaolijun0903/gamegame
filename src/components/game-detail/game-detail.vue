@@ -1,13 +1,12 @@
 <template>
   <transition name="slide">
-  	
-    <scroll class="game-detail"
+    <scroll ref="scroll"
+    	class="game-detail"
             :data="datalist"
             :probe-type="probeType"
             :listen-scroll="listenScroll"
-            @scroll="scrollPos"
-    >
-      <div>
+            @scroll="scrollPos">
+      <div v-show="imgs.length>0">
       	<div class="back-title">
 			    <div class="back" @click="back">
 			      <i class="iconfont icon-fanhui"></i>
@@ -61,18 +60,32 @@
           <span class="detail-tab-inner">{{item}}</span>
         </div>
       </div>
-      <div class="download-btn-wrapper">
+      <div class="download-btn-wrapper" v-if="imgs.length>0">
         <div class="download-btn" @click="download">下载</div>
       </div>
+      <div class="loading-container" v-show="showLoading">
+        <loading></loading>
+      </div>
+    	<div class="fetch-failed" v-if="!showLoading && imgs.length<=0">
+    		<div class="wifi">
+			    <i>wifi</i>
+			  </div>
+			  <div class="detail-info">
+			  	<span class="text">加载失败，请检查网络后重试~</span>
+			  </div>
+			  <div class="reset-btn">
+			  	<span class="text" @click="resetfetch()">重试</span>
+			  </div>
+    	</div>
     </scroll>
   </transition>
 </template>
 
 <script>
+	import loading from 'base/loading/loading'
   import scroll from 'base/scroll/scroll'
   import scrollX from 'base/scroll-x/scroll-x'
   import greyBar from 'base/grey-bar/grey-bar'
-  import loading from 'base/loading/loading'
   import warning from 'base/warning/warning'
   import {getDetail} from 'api/game'
   import {cloneObj, baseUrl} from "common/js/util"
@@ -80,6 +93,7 @@
   export default {
     data(){
       return{
+      	showLoading: true,
         detailObj:{
           ioc_path: "static/img/error.png"
         },
@@ -100,17 +114,19 @@
     methods:{
       initData(){
         getDetail(this.$route.params.id).then((res)=>{
-//          console.log(res);
+					// console.log(res);
+					this.showLoading = false;
           this.imgs = this.normalizeImage(res.img);
           this.$nextTick(()=>{
             this.$refs.scrollx.initScrollX();
+            this.$refs.scroll.refresh();
           })
           this.detailObj = cloneObj(res);
           this.detailObj.ioc_path = baseUrl() + res.ioc_path;
 
         }).catch((err)=>{
           console.log('detail-err')
-         // this.detailObj.ioc_path = "static/img/error.png"
+          this.showLoading = false;
         })
       },
       back(){
@@ -148,6 +164,10 @@
         var downurl = baseUrl()+"/download/"+this.detailObj.apkname+".apk";
         console.log(downurl);
         window.location.href = downurl;
+      },
+      resetfetch(){
+      	this.showLoading = true;
+      	this.initData();
       }
     },
     components:{
@@ -166,6 +186,35 @@
   }
   .slide-enter,.slide-leave-to{
     transform:translate3d(100%,0,0);
+  }
+  .fetch-failed {
+  	position: absolute;
+  	width: 100%;
+  	top: 40%;
+  	text-align: center;
+  }
+  .fetch-failed .wifi{
+  	color: #999999;
+  }
+  
+  .fetch-failed .detail-info{
+  	font-size: 15px;
+  	line-height: 15px;
+  	color: #999999;
+  	margin-top: 25px;
+  }
+  .fetch-failed .reset-btn {
+  	margin-top: 25px;
+  	font-size: 13px;
+  	color: #999999;
+  }
+  .fetch-failed .reset-btn .text{
+  	display: inline-block;
+  	width: 58px;
+  	height: 33px;
+  	line-height: 33px;
+  	box-sizing: border-box;
+  	border: 1px solid #cccccc;
   }
 
   .game-detail{
@@ -307,7 +356,7 @@
   }
   .game-detail .detail-tab-container{
     padding:20px 15px 0;
-    height: 800px;
+    height: 100%;
     /*background: #ccc;*/
   }
   .game-detail .detail-tab-container .detail-content{
@@ -332,5 +381,12 @@
     background: #00a98f;
     color: #fff;
     border-radius:5px;
+  }
+  
+  .game-detail .loading-container{
+    position: absolute;
+    width: 100%;
+    top: 50%;
+    transform: translateY(-50%);
   }
 </style>
