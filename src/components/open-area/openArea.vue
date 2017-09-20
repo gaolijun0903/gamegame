@@ -55,6 +55,12 @@
     <div class="loading-container" v-show="showLoading">
       <loading></loading>
     </div>
+    <div class="no-data" v-if="!showLoading && todayList.length<=0">
+    	<div class="detail-info">
+		  <span class="text">暂无数据~</span>
+		</div>
+    	
+    </div>
     <top-tip ref="toptip"></top-tip>
     <router-view></router-view>
   </div>
@@ -160,6 +166,20 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+	.no-data {
+	  position: absolute;
+	  width: 100%;
+	  top: 40%;
+	  text-align: center;
+	}
+	.no-data .detail-info{
+	  font-size: 15px;
+	  line-height: 15px;
+	  color: #999999;
+	  margin-top: 25px;
+	}
+	
+	
   .open-area{
     position: fixed;
     top: 0;

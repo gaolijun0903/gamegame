@@ -66,8 +66,8 @@
       <div class="loading-container" v-show="showLoading">
         <loading></loading>
       </div>
-    	<div class="fetch-failed" v-if="!showLoading && imgs.length<=0">
-    		<div class="wifi">
+		<div class="fetch-failed" v-if="!showLoading && imgs.length<=0">
+			<div class="wifi">
 			    <i>wifi</i>
 			  </div>
 			  <div class="detail-info">
@@ -76,7 +76,7 @@
 			  <div class="reset-btn">
 			  	<span class="text" @click="resetfetch()">重试</span>
 			  </div>
-    	</div>
+		</div>
     </scroll>
   </transition>
 </template>
