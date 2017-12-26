@@ -43,7 +43,7 @@ export function cloneObj(obj){
 }
 
 export function baseUrl(){
-	return "http://app.kf989.com";
+	return "static/";
 }
 
 

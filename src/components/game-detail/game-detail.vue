@@ -89,10 +89,11 @@
   import warning from 'base/warning/warning'
   import {getDetail} from 'api/game'
   import {cloneObj, baseUrl} from "common/js/util"
-
+  import {getChannel} from 'api/channel'
   export default {
     data(){
       return{
+	    channel:"",
       	showLoading: true,
         detailObj:{
           ioc_path: "static/img/error.png"
@@ -109,11 +110,13 @@
     },
     created(){
 //      console.log('game-detail-created')
-      this.initData()
+		this.channel=getChannel();
+        this.initData()
     },
     methods:{
       initData(){
-        getDetail(this.$route.params.id).then((res)=>{
+	    
+        getDetail(this.$route.params.id,this.channel).then((res)=>{
 					// console.log(res);
 					this.showLoading = false;
           this.imgs = this.normalizeImage(res.img);
@@ -168,7 +171,7 @@
 	      	isNet = myObj.checknet('检测是否有网络');
       	}catch(error){}
       	if(isNet){
-      		var downurl = baseUrl()+"/download/"+this.detailObj.apkname+".apk";
+      		var downurl = this.detailObj.apkname;
         	window.location.href = downurl;      		
       	}
       },

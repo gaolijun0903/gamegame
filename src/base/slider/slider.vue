@@ -48,30 +48,33 @@ export default{
 		})
 	},
 	activated() {   //keep-alive 组件激活时调用。
-    if (this.autoPlay) {
-      this._play()
-    }
-  },
-  deactivated() {
-    clearTimeout(this.timer)
-  },
+	    if (this.autoPlay) {
+	      this._play()
+	    }
+	},
+	deactivated() {
+	    clearTimeout(this.timer)
+	},
 	beforeDestroy(){
 		clearTimeout(this.timer);
 	},
 	methods:{
-	  initSlider(){
-      this._setSliderWidth();
-      this._initDots();
-      this._initSlider();
-      if(this.autoPlay){
-        this._play();
-      }
-    },
+	  	initSlider(){
+	  		if(this.slider){
+	  			this.slider.refresh()
+	  			return
+	  		}
+	      	this._setSliderWidth();
+	      	this._initDots();
+	      	this._initSlider();
+	      	if(this.autoPlay){
+	        	this._play();
+	      	}
+	    },
 		_setSliderWidth(isResize){
 			this.children = this.$refs.sliderGroup.children;
 			let width = 0;
 			let sliderWidth = this.$refs.slider.clientWidth;
-
 
 			for(let i=0; i<this.children.length; i++){
 				let child = this.children[i];

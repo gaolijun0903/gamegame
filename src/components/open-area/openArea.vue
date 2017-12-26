@@ -5,8 +5,7 @@
             v-if="allList.length"
             :pulldown="pulldown"
             :probe-type="probeType"
-            @scrollNearTop="refresh"
-    >
+            @scrollNearTop="refresh"  >
       <div class="arealist">
         <div class="refresh">下拉刷新</div>
         <div class="today">
@@ -73,11 +72,13 @@
   import loading from 'base/loading/loading'
   import {getOpenAreaList} from 'api/open'
   import {normalizeImage2} from 'common/js/game-img'
+  import {getChannel} from 'api/channel'
   import storage from 'good-storage'
 
   export default {
     data () {
       return {
+	  	channel:"",
         todayList:[],
         tomorrowList:[],
         pulldown:true,
@@ -94,6 +95,7 @@
     },
     mounted(){
       this.initData(false);
+	  	this.channel=getChannel()
     },
     methods:{
       initData(ispulldown){
@@ -106,7 +108,7 @@
 	        if(!ispulldown){
 	          this.showLoading = true;
 	        }
-	        getOpenAreaList().then((res)=>{
+	        getOpenAreaList(this.channel).then((res)=>{
 	          this.showLoading = false;
 	          console.log(res);
 	          storage.set('openarea-json',res);
@@ -192,6 +194,7 @@
   }
   .open-area .arealist{
     position: relative;
+    min-height:101%; 
   }
   .open-area .arealist .refresh{
     position: absolute;

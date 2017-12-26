@@ -54,10 +54,12 @@
   import {getRecommendList,getSearchList} from 'api/search'
   import {loadSearch,saveSearch,clearSearch} from 'common/js/cache'
   import {baseUrl} from "common/js/util"
-
+  import {getChannel} from 'api/channel'
+  import {normalizeImage} from 'common/js/game-img'
   export default {
     data() {
       return {
+	  	channel:"",
         showResult:false,
         types:[],
         hots:[],
@@ -72,10 +74,12 @@
     },
     created(){
       this.initData();
+	  
     },
     methods:{
       initData(){
-        getRecommendList().then((res)=>{
+	  	this.channel=getChannel();
+        getRecommendList(this.channel).then((res)=>{
           console.log(res)
           this.types = res.typelist;
           this.hots = res.recommendlist;
@@ -88,11 +92,11 @@
           this.showResult = false;
           return
         }
-        getSearchList(newQuery).then((res)=>{
+        getSearchList(newQuery,this.channel).then((res)=>{
           this.showResult = true;
           console.log('search-result')
           console.log(res)
-          this.searchResult = res.gamelist;
+          this.searchResult = normalizeImage(res.gamelist);
         })
         this.historyList = saveSearch(newQuery); //添加到搜索历史的缓存中
         this.blurInput();
@@ -119,7 +123,7 @@
 	      	isNet = myObj.checknet('检测是否有网络');
       	}catch(error){}
       	if(isNet){
-      		var downurl = baseUrl()+"/download/"+item.apkname+".apk";
+      		var downurl = item.apkname;
         	console.log(downurl);
         	window.location.href = downurl;      		
       	}

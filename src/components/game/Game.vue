@@ -4,18 +4,21 @@
             :data="gamelist"
             :pullup="pullup"
             @scrollNearEnd="addMore"
-    >
-      <div>
+            :pulldown="pulldown"
+            @scrollNearTop="downRefresh"
+            >
+      <div class="allGamelist">
+      	<div class="refresh">下拉刷新</div>
         <div class="slider-wrapper" v-if="focuslist.length">
           <slider ref="slider">
             <div v-for="(item,index) in focuslist" @click="toDetail(item)">
-                <img class="needsclick" @load="loadImage(index)" :src="item.imgpath" :onerror="defaultLoop"/>
+                <img class="needsclick" :class="item.gameid" @load="loadImage(index)" :src="item.imgpath" :onerror="defaultLoop"/>
             </div>
           </slider>
         </div>
         <div class="newgamelist-wrapper" v-if="newgamelist.length">
           <div class="newgamelist-title">
-            <h1 class="title-text">新游下载</h1>
+            <h1 class="title-text">新游推荐</h1>
           </div>
           <div class="newgamelist" v-if="newgamelist.length">
             <scroll-x ref="scrollx">
@@ -35,16 +38,14 @@
           <ul>
             <game-list :data="gamelist" @toDetail="toDetail" @download="download"></game-list>
             <div class="loadsucc" v-show="loadsucc">
-              <loading title="" v-show="hasMore && gamelist.length"></loading>
+              <loading title="" v-show="hasMore && gamelist.length>=4"></loading>
               <div class="no-more" v-show="!hasMore">
                 <div class="line"></div>
                 <div class="text">我是有底线的</div>
                 <div class="line"></div>
               </div>
             </div>
-            <div class="loadfail" v-show="!loadsucc && !showLoading">
-              网络出错了
-            </div>
+            <div class="loadfail" v-show="!loadsucc && !showLoading">网络出错了</div>
           </ul>
         </div>
       </div>
@@ -52,6 +53,7 @@
         <loading></loading>
       </div>
     </scroll>
+    <top-tip ref="toptip"></top-tip>
     <router-view></router-view>
   </div>
 </template>
@@ -62,21 +64,30 @@
   import scrollX from 'base/scroll-x/scroll-x'
   import gameList from 'base/game-list/game-list'
   import greyBar from 'base/grey-bar/grey-bar'
+  import topTip from 'base/top-tip/top-tip'
   import loading from 'base/loading/loading'
-  import {getGamelist,addMoreGamelist} from 'api/game'
+  import {getGamelist,addMoreGamelist,setUID} from 'api/game'
   import {normalizeImage} from 'common/js/game-img'
   import storage from 'good-storage'
   import {baseUrl} from "common/js/util"
+  import {setChannel,getChannel} from 'api/channel'
 
   export default{
   	name: "game",
     data () {
       return {
-        focuslist:[],
+	  		channel:"",
+				UID:"",
+        focuslist:[
+        {gameid: "1", imgpath: "img/loop.jpg"},
+        {gameid: "2", imgpath: "img/loop.jpg"},
+        {gameid: "3", imgpath: "img/loop.jpg"}
+        ],
         newgamelist:[],
         gamelist:[],
         page:1,
         pullup:true,
+        pulldown:true,
         loadsucc:false,
         hasMore:true,
         showLoading:true,
@@ -86,23 +97,32 @@
     },
     created(){
       console.log('game-created');
-      this.initData();
+      this.initData(false);
     },
     methods:{
-      initData(){
+      initData(ispulldown){
       	var isNet = true;
       	try{
       		// 检测是否有网络
+					this.channel =myObj.getAppMetaData();
+					this.UID =myObj.getUid();
+					setChannel(this.channel);
 	      	isNet = myObj.checknet('检测是否有网络');
       	}catch(error){}
       	if(isNet){
+					setUID(this.UID,this.channel).then();
 	        this.showLoading = true;        //只在第一次请求数据时使用，请求结束，不管成功与否都消失
-	        getGamelist().then((res)=>{
+	        getGamelist(this.channel).then((res)=>{
 	          this.showLoading = false;
 	          this.loadsucc = true;     //加载成功，可以显示addmore和底线
-	          console.log(res)
 	          storage.set('firstpage-json',res);       // 存储更新storage数据
-	          this.focuslist = normalizeImage(res.focuslist);
+	          if(res.gamelist.length<10){    //默认一次返回10条数据，小于10条，不能加载更多了
+	          	this.hasMore = false;
+	          }
+	          if(ispulldown){//下拉刷新成功提示
+	            this.$refs.toptip.show(0);
+	          }
+						this.focuslist = normalizeImage(res.focuslist); 
 	          this.newgamelist = normalizeImage(res.newgamelist);
 	          this.$nextTick(()=>{
 	          	this.$refs.slider.initSlider();
@@ -113,33 +133,34 @@
 	        	this.useStorage();
 	        })
         }else{
-			this.useStorage();
-       }
+					this.useStorage();
+       	}
       },
       useStorage(){  // 网络超时以及无网络获取缓存数据，进行展示
       	this.showLoading = false;
-		this.loadsucc = false;     //加载失败，显示网络出错，不能显示addmore和底线
-		console.log('net error');
-		var firPagejson = storage.get('firstpage-json', 404);
-		if(firPagejson===404){
-			console.log('no storage');
-		}else{
+				this.loadsucc = false;     //加载失败，显示网络出错，不能显示addmore和底线
+				console.log('net error');
+				var firPagejson = storage.get('firstpage-json', 404);
+				if(firPagejson===404){
+					console.log('no storage');
+				}else{
       		console.log('use storage');
-			this.focuslist = normalizeImage(firPagejson.focuslist);
-			this.newgamelist = normalizeImage(firPagejson.newgamelist);
-			this.$nextTick(()=>{
-				this.$refs.slider.initSlider();
-				this.$refs.scrollx.initScrollX()
-				this.gamelist = normalizeImage(firPagejson.gamelist);
+					this.focuslist = normalizeImage(firPagejson.focuslist);
+					this.newgamelist = normalizeImage(firPagejson.newgamelist);
+					this.$nextTick(()=>{
+						this.$refs.slider.initSlider();
+						this.$refs.scrollx.initScrollX()
+						this.gamelist = normalizeImage(firPagejson.gamelist);
 	        })
-		}
+				}
       },
       addMore(){
+      	//console.log("上拉加载")
         if(!this.hasMore){
           return
         }
         this.page++;
-        addMoreGamelist(this.page).then((res)=>{
+        addMoreGamelist(this.page,this.channel).then((res)=>{
           this.loadsucc = true;    //加载成功，可以显示addmore和底线
           this.gamelist = this.gamelist.concat( normalizeImage(res.gamelist) );
           if(this.page===res.total_page){
@@ -153,11 +174,15 @@
           this.loadsucc = false;     //加载失败，显示网络出错，不能显示addmore和底线
         })
       },
+      downRefresh(){
+      	//console.log("下拉刷新")
+      	this.initData(true);
+      },
       loadImage(idx){
         if (!this.checkLoaded){
           this.$refs.scroll.refresh();
           this.checkLoaded = true;
-//          this.setImageHeight(idx)  //这个方案并不好，resize的时候，高度被固定了
+//        this.setImageHeight(idx)  //这个方案并不好，resize的时候，高度被固定了
         }
       },
       setImageHeight(idx){
@@ -180,14 +205,14 @@
 	      	isNet = myObj.checknet('检测是否有网络');
       	}catch(error){}
       	if(isNet){
-      		var downurl = baseUrl()+"/download/"+item.apkname+".apk";
+      		var downurl = item.apkname;
         	console.log(downurl);
         	window.location.href = downurl;      		
       	}
       }
     },
     beforeRouteEnter(to, from, next){
-		next(true)
+			next(true)
     	window.document.location = "js://webview?network=1"
     },
     activated(){
@@ -199,6 +224,7 @@
       scrollX,
       gameList,
       greyBar,
+      topTip,
       loading
     }
   }
@@ -215,6 +241,16 @@
   .game .game-content{
     height: 100%;
     overflow: hidden;
+  }
+  .game .allGamelist{
+  	position: relative;
+    min-height:101%;  
+  }
+  .game .allGamelist .refresh{
+    position: absolute;
+    top:-30px;
+    width: 100%;
+    text-align: center;
   }
   .game .slider-wrapper{
     position: relative;

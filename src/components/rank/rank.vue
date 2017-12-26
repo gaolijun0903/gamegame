@@ -9,10 +9,11 @@
 <script>
   import scroll from 'base/scroll/scroll'
   import {getRankList} from 'api/rank'
-
+  import {getChannel} from 'api/channel'
   export default {
     data(){
       return{
+	    channel:"",
         rankList:[]
       }
     },
@@ -21,7 +22,7 @@
     },
     methods:{
       initData(){
-        getRankList().then((res)=>{
+        getRankList(getChannel()).then((res)=>{
           console.log(res)
         }).catch((err)=>{
           console.log(err)

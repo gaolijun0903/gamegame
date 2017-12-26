@@ -28,10 +28,10 @@ export default{
 			type:Boolean,
 			default:false
 		},
-    pulldown:{
-		  type:Boolean,
-      default:false
-    },
+	    pulldown:{
+			  type:Boolean,
+	      default:false
+	    },
 		beforeScroll:{
 			type:Boolean,
 			default:false
@@ -62,19 +62,19 @@ export default{
 				})
 			}
 			if(this.pullup){
-        this.scroll.on('scrollEnd',(pos)=>{
-          if(this.scroll.y <= this.scroll.maxScrollY + 50){
-            this.$emit('scrollNearEnd');
-          }
-        })
-      }
-      if(this.pulldown){
-          this.scroll.on('touchend', (pos) => {
-            if (pos.y > 50) {
-              this.$emit('scrollNearTop')
-            }
-          })
-      }
+		        this.scroll.on('scrollEnd',(pos)=>{
+		          if(this.scroll.y <= this.scroll.maxScrollY + 50){
+		            this.$emit('scrollNearEnd');
+		          }
+		        })
+	      	}
+	      	if(this.pulldown){
+	          	this.scroll.on('touchend', (pos) => {
+	            	if (pos.y > 50) {
+	              		this.$emit('scrollNearTop')
+	            	}
+	          	})
+	      	}
 			if(this.beforeScroll){
 				this.scroll.on('beforeScrollStart',()=>{
 					this.$emit('beforeScrollStart');
