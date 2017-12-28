@@ -1,7 +1,7 @@
 export function getChannel(){
-	return global.Channel;
+	return global.COURSES;
 }
 
 export function setChannel(str){
-	global.Channel=str;
+	global.COURSES=str;
 }

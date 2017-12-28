@@ -97,20 +97,23 @@
     },
     created(){
       console.log('game-created');
+	  this.channel ='shijie';
+	  setChannel(this.channel);
       this.initData(false);
+	  
     },
     methods:{
       initData(ispulldown){
       	var isNet = true;
       	try{
       		// 检测是否有网络
-					this.channel =myObj.getAppMetaData();
+					//this.channel =myObj.getAppMetaData();
 					this.UID =myObj.getUid();
 					setChannel(this.channel);
 	      	isNet = myObj.checknet('检测是否有网络');
       	}catch(error){}
       	if(isNet){
-					setUID(this.UID,this.channel).then();
+			setUID(this.UID,this.channel).then();
 	        this.showLoading = true;        //只在第一次请求数据时使用，请求结束，不管成功与否都消失
 	        getGamelist(this.channel).then((res)=>{
 	          this.showLoading = false;
@@ -122,7 +125,7 @@
 	          if(ispulldown){//下拉刷新成功提示
 	            this.$refs.toptip.show(0);
 	          }
-						this.focuslist = normalizeImage(res.focuslist); 
+			this.focuslist = normalizeImage(res.focuslist); 
 	          this.newgamelist = normalizeImage(res.newgamelist);
 	          this.$nextTick(()=>{
 	          	this.$refs.slider.initSlider();

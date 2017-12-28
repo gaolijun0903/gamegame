@@ -95,7 +95,7 @@
     },
     mounted(){
       this.initData(false);
-	  	this.channel=getChannel()
+	  this.channel=getChannel()
     },
     methods:{
       initData(ispulldown){

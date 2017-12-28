@@ -1,8 +1,8 @@
 <template>
 <div class="search-box">
-	<i class="iconfont icon-sousuo"></i>
+	<i class="iconfont icon-sousuo1"></i>
 	<input type="text" v-model="query" class="box" :placeholder="placeholder" ref="input"/>
-	<i class="iconfont icon-unif060" v-show="query" @click="clear"></i>
+	<i class="iconfont icon-delete" v-show="query" @click="clear"></i>
 </div>
 </template>
 

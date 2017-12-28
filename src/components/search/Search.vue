@@ -22,7 +22,7 @@
             <h1 class="history-title">
               <span class="title-text">搜索历史</span>
               <span class="clear" @click="clearHistory">
-                <i class="iconfont icon-delete"></i>清空
+                <i class="iconfont icon-qingkong"></i>清空
               </span>
             </h1>
             <ul class="history-list">

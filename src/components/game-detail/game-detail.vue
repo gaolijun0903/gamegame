@@ -44,10 +44,10 @@
           </div>
           <div class="detail-tab-container">
             <div class="detail-content" v-if="currentIndex===0">
-            	<p v-html="detailObj.detailed"></p>
+								<div v-html="jieshao"></div>
             </div>
             <div class="detail-content" v-if="currentIndex===1">
-              	开服
+              	<div v-html="fuli"></div>
             </div>
             <div class="detail-content" v-if="currentIndex===2">
               	礼包
@@ -98,9 +98,11 @@
         detailObj:{
           ioc_path: "static/img/error.png"
         },
+      	jieshao:"",
+      	fuli:"",
         imgs:[],
         datalist:[],
-        detailTabs:['福利'/*,'开服','礼包'*/],
+        detailTabs:['介绍','福利','礼包'/*,'礼包'*/],
         currentIndex:0,
         probeType:3,
         listenScroll:true,
@@ -109,13 +111,13 @@
       }
     },
     created(){
+		
 //      console.log('game-detail-created')
 		this.channel=getChannel();
         this.initData()
     },
     methods:{
       initData(){
-	    
         getDetail(this.$route.params.id,this.channel).then((res)=>{
 					// console.log(res);
 					this.showLoading = false;
@@ -126,6 +128,8 @@
           })
           this.detailObj = cloneObj(res);
           this.detailObj.ioc_path = baseUrl() + res.ioc_path;
+				  this.jieshao = this.detailObj.sketch;
+				  this.fuli = this.detailObj.detailed;
 
         }).catch((err)=>{
           console.log('detail-err')
@@ -365,7 +369,7 @@
     border-bottom:2px solid #00a98f;
   }
   .game-detail .detail-tab-container{
-    padding:20px 15px 60px;
+    padding:20px 15px 0;
     height: 100%;
     /*background: #ccc;*/
   }

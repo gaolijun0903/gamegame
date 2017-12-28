@@ -10,33 +10,49 @@
       </div>
     </div>
 	</router-link>
+	
+   <router-link tag="div" class="tab-item" to="/activity" replace>
+    <div class="tab-inner">
+      <div class="icon">
+        <i class="iconfont icon-huodong"></i>
+      </div>
+      <div class="text">
+        <span class="tab-link">活动</span>
+      </div>
+    </div>
+  </router-link>
+	
 	<router-link tag="div" class="tab-item" to="/openarea" replace>
     <div class="tab-inner">
       <div class="icon">
-        <i class="iconfont icon-caidan"></i>
+        <i class="iconfont icon-2"></i>
       </div>
       <div class="text">
         <span class="tab-link">开服</span>
       </div>
     </div>
 	</router-link>
+	
+	
 	<router-link tag="div" class="tab-item" to="/search" replace>
     <div class="tab-inner">
       <div class="icon">
-        <i class="iconfont icon-sousuo1"></i>
+        <i class="iconfont icon-sousuo"></i>
       </div>
       <div class="text">
         <span class="tab-link">搜索</span>
       </div>
     </div>
 	</router-link>
-  <router-link tag="div" class="tab-item" to="/rank" replace v-if="false">
+	
+	
+   <router-link tag="div" class="tab-item" to="/kefu" replace>
     <div class="tab-inner">
       <div class="icon">
-        <i class="iconfont icon-paixing"></i>
+        <i class="iconfont icon-mine_icon_customer"></i>
       </div>
       <div class="text">
-        <span class="tab-link">排行</span>
+        <span class="tab-link">客服</span>
       </div>
     </div>
   </router-link>
@@ -57,7 +73,7 @@ export default{}
   box-sizing: border-box;
   align-items: center;
   width: 100%;
-	height: 60px;
+  height: 60px;
   background: #eaeaea;
   color: #bababa;
   font-weight: 100;
