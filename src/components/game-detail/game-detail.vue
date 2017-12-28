@@ -44,7 +44,7 @@
           </div>
           <div class="detail-tab-container">
             <div class="detail-content" v-if="currentIndex===0">
-            	<p>{{detailObj.detailed}}</p>
+            	<p v-html="detailObj.detailed"></p>
             </div>
             <div class="detail-content" v-if="currentIndex===1">
               	开服
@@ -365,7 +365,7 @@
     border-bottom:2px solid #00a98f;
   }
   .game-detail .detail-tab-container{
-    padding:20px 15px 0;
+    padding:20px 15px 60px;
     height: 100%;
     /*background: #ccc;*/
   }
