@@ -554,7 +554,7 @@
   	font-size: 10px;
   }
   .game-detail .detail-content-libao .libao-getbtn-wrapper .lbgetbtn{
-  	font-size: 10px;
+  	font-size: 12px;
     margin-top: 5px;
     text-align: center;
     background: #FE3838;
