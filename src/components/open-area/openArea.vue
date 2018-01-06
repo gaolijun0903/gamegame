@@ -93,9 +93,10 @@
         return arr
       }
     },
-    mounted(){
-      this.initData(false);
+    mounted(){ 
 	  this.channel=getChannel()
+      this.initData(false);
+	 
     },
     methods:{
       initData(ispulldown){

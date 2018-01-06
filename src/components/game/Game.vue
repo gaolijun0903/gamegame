@@ -66,11 +66,11 @@
   import greyBar from 'base/grey-bar/grey-bar'
   import topTip from 'base/top-tip/top-tip'
   import loading from 'base/loading/loading'
-  import {getGamelist,addMoreGamelist,setUID} from 'api/game'
+  import {getGamelist,addMoreGamelist} from 'api/game'
   import {normalizeImage} from 'common/js/game-img'
   import storage from 'good-storage'
   import {baseUrl} from "common/js/util"
-  import {setChannel,getChannel} from 'api/channel'
+  import {setChannel} from 'api/channel'
 
   export default{
   	name: "game",
@@ -97,7 +97,7 @@
     },
     created(){
       console.log('game-created');
-	  this.channel ='shijie';
+	  this.channel ="shijie";
 	  setChannel(this.channel);
       this.initData(false);
 	  
@@ -107,15 +107,15 @@
       	var isNet = true;
       	try{
       		// 检测是否有网络
-					//this.channel =myObj.getAppMetaData();
-					this.UID =myObj.getUid();
-					setChannel(this.channel);
+			//this.channel =myObj.getAppMetaData();
+	  		//setChannel(this.channel);
+			this.UID =myObj.getUid();
 	      	isNet = myObj.checknet('检测是否有网络');
       	}catch(error){}
       	if(isNet){
-			setUID(this.UID,this.channel).then();
+			this.page=1;
 	        this.showLoading = true;        //只在第一次请求数据时使用，请求结束，不管成功与否都消失
-	        getGamelist(this.channel).then((res)=>{
+	        getGamelist(this.UID,this.channel).then((res)=>{
 	          this.showLoading = false;
 	          this.loadsucc = true;     //加载成功，可以显示addmore和底线
 	          storage.set('firstpage-json',res);       // 存储更新storage数据
@@ -124,6 +124,7 @@
 	          }
 	          if(ispulldown){//下拉刷新成功提示
 	            this.$refs.toptip.show(0);
+				this.hasMore = true;
 	          }
 			this.focuslist = normalizeImage(res.focuslist); 
 	          this.newgamelist = normalizeImage(res.newgamelist);

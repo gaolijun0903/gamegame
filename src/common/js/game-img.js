@@ -4,9 +4,9 @@ export function normalizeImage(list){
   let _list = cloneObj(list);
   _list.forEach((item)=>{
     if(item.imgpath){
-      item.imgpath = 'static/'+item.imgpath;
+      item.imgpath = 'static'+item.imgpath;
     }else if(item.ioc_path){
-      item.ioc_path = 'static/' + item.ioc_path;
+      item.ioc_path = 'static' + item.ioc_path;
     }
   })
   return _list;
@@ -19,7 +19,7 @@ export function normalizeImage2(list){
     time.openingtime = formatTime(time.openingtime)
     time.openlist.forEach((item)=>{
       if(item.ioc_path){
-        item.ioc_path = 'static/' + item.ioc_path;
+        item.ioc_path = 'static' + item.ioc_path;
       }
     })
   })

@@ -25,7 +25,7 @@
 	<router-link tag="div" class="tab-item" to="/openarea" replace>
     <div class="tab-inner">
       <div class="icon">
-        <i class="iconfont icon-2"></i>
+        <i class="iconfont icon-caidan"></i>
       </div>
       <div class="text">
         <span class="tab-link">开服</span>

@@ -1,8 +1,8 @@
 import jsonp from 'common/js/jsonp'
 
-export function getGamelist(cpsid){
+export function getGamelist(uid,cpsid){
   const url = 'http://app.kf989.com/api/data?cpsid='+cpsid;
-  return jsonp(url, {}, {timeout:3000})
+  return jsonp(url, {uid:uid}, {timeout:3000})
 }
 
 export function addMoreGamelist(page,cpsid){

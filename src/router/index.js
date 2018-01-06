@@ -5,6 +5,7 @@ import GameDetail from 'components/game-detail/game-detail'
 import openArea from 'components/open-area/openArea'
 import Search from 'components/search/Search'
 import Activity from 'components/activity/Activity'
+import ActivityDetail from 'components/activity-detail/activity-detail'
 import Kefu from 'components/kefu/kefu'
 
 
@@ -52,7 +53,13 @@ export default new Router({
     {
       path: '/activity',
       name: 'Activity',
-      component: Activity
+      component: Activity,
+	  children:[
+        {
+          path:':id',
+          component: ActivityDetail
+        }
+      ]
     },
     {
       path: '/kefu',
